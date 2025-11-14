@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://hemomorphic.alexblood.net/</loc>
+    </url>
+    <url>
+        <loc>https://hemomorphic.alexblood.net/about/</loc>
+    </url>
+    <url>
+        <loc>https://hemomorphic.alexblood.net/cv/</loc>
+    </url>
+    <url>
+        <loc>https://hemomorphic.alexblood.net/page/1/</loc>
+    </url>
+    <url>
+        <loc>https://hemomorphic.alexblood.net/posts/init/</loc>
+        <lastmod>2025-11-14T22:04:00+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://hemomorphic.alexblood.net/tags/</loc>
+    </url>
+    <url>
+        <loc>https://hemomorphic.alexblood.net/tags/blogging/</loc>
+    </url>
+    <url>
+        <loc>https://hemomorphic.alexblood.net/tags/rust/</loc>
+    </url>
+</urlset>
