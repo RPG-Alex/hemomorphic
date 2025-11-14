@@ -1,6 +1,6 @@
 +++
 title = "init hemomorphic/"
-date = 2025-11-15T08:00:00+08:00
+date = 2025-11-14T22:04:00+08:00
 
 [taxonomies]
 tags = ["rust", "blogging"]
