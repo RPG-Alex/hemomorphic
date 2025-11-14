@@ -1,0 +1,30 @@
+{# templates/shortcodes/playground.html #}
+{# Params:
+   gist   = "GIST_ID"   (optional; preloads code from a GitHub Gist)
+   height = 400         (optional; number, px will be added)
+   width  = "100%"      (optional; any CSS width)
+#}
+
+{% set base = "https://play.rust-lang.org/" %}
+
+{# build optional gist query #}
+{% set gist_param = "" %}
+{% if gist is defined and gist | length > 0 %}
+  {% set gist_param = "?gist=" ~ gist %}
+{% endif %}
+
+{% set src = base ~ gist_param %}
+
+{# stash defaults to keep attributes simple #}
+{% set w = width  | default(value="100%") %}
+{% set h = height | default(value=400) %}
+
+<div class="playground-embed" style="max-width:100%;">
+  <iframe
+    src="{{ src }}"
+    style='width:{{ w }}; height:{{ h }}px; border:0;'
+    loading="lazy"
+    referrerpolicy="no-referrer"
+    sandbox="allow-scripts allow-same-origin"
+  ></iframe>
+</div>
