@@ -18,7 +18,7 @@ tags = ["rust", "blogging"]
 ===========================================================================================
 ```
 Welcome to my blog. My name is Alex Blood. This is the initial blog post and marks the beginning of a blog I have been wanting to create for a long time. 
-
+<!-- more -->
 ## tech-stack --list
 I went out of my way to find the simplest stack I could for this blog. That means using a `static webpage`, hosted on *github pages*. 
 

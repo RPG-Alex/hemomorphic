@@ -91,15 +91,15 @@ repo = "hemomorphic"
 # and don't use the same repo_id and category_id as in the example below
 [extra.giscus]
 repo = "rpg-alex/hemomorphic"
-repo_id = "g"
-category = "Comments"
-category_id = ""
-mapping = "og:title"
+repo_id = "R_kgDOQVq14Q"
+category = "Blog comments"
+category_id = "DIC_kwDOQVq14c4CzJUG"
+mapping = "pathname"
 strict = 0
 reactions_enabled = 1
 emit_metadata = 0
 input_position = "top"
-theme = "dark"
+theme = "transparent_dark"
 lang = "en"
 loading = "lazy"
 crossorigin = "anonymous"
