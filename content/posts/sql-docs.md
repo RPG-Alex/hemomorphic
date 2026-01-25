@@ -1,6 +1,6 @@
 +++
 title = "// sql-docs: published on crates.io!"
-
+date = 2026-01-25T19:47:08+08:00
 
 [taxonomies]
 tags = ["rust", "blogging","sql","parsing","project"]

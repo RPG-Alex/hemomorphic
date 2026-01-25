@@ -13,11 +13,6 @@ jobs:
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 
-          
-      - name: Inject post dates from git history
-        run: ./scripts/inject_dates.sh
 
       - name: Build and deploy
         uses: shalzz/zola-deploy-action@v0.21.0
