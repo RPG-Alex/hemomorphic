@@ -11,7 +11,8 @@ find "$POSTS_DIR" -type f -name "*.md" | while read -r file; do
   fi
 
   if ! grep -q '^date *= *' "$file"; then
-    ts=$(git log --follow --reverse --format=%aI --max-count=1 -- "$file")
+    ts=$(git log --follow --reverse --format=%aI -- "$file" | head -n 1)
+
 
     if [[ -z "$ts" ]]; then
       echo "No git history for $file, skipping"
