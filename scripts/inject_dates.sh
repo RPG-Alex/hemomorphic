@@ -4,15 +4,21 @@ set -euo pipefail
 POSTS_DIR="content"
 
 find "$POSTS_DIR" -type f -name "*.md" | while read -r file; do
+  base="$(basename "$file")"
+
+  if [[ "$base" == _* ]]; then
+    continue
+  fi
+
   if ! grep -q '^date *= *' "$file"; then
     ts=$(git log --follow --reverse --format=%aI -- "$file" | head -n 1)
 
     if [[ -z "$ts" ]]; then
-      echo "⚠️  No git history for $file, skipping"
+      echo "No git history for $file, skipping"
       continue
     fi
 
-    echo "🕒 Injecting date $ts into $file"
+    echo "Injecting date $ts into $file"
 
     # insert date after front-matter opening +++
     awk -v date="$ts" '
