@@ -5,7 +5,6 @@ POSTS_DIR="content/posts"
 
 find "$POSTS_DIR" -type f -name "*.md" | while read -r file; do
   base="$(basename "$file")"
-
   if [[ "$base" == _* ]]; then
     continue
   fi
@@ -24,7 +23,7 @@ find "$POSTS_DIR" -type f -name "*.md" | while read -r file; do
       BEGIN { inserted=0 }
       /^(\+\+\+|---)$/ && inserted==0 {
         print
-        print "date = " date
+        print "date = \"" date "\""
         inserted=1
         next
       }
