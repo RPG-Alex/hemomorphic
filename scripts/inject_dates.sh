@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-POSTS_DIR="content"
+POSTS_DIR="content/posts"
 
 find "$POSTS_DIR" -type f -name "*.md" | while read -r file; do
   base="$(basename "$file")"
@@ -11,7 +11,7 @@ find "$POSTS_DIR" -type f -name "*.md" | while read -r file; do
   fi
 
   if ! grep -q '^date *= *' "$file"; then
-    ts=$(git log --follow --reverse --format=%aI -- "$file" | head -n 1)
+    ts=$(git log --follow --reverse --format=%aI --max-count=1 -- "$file")
 
     if [[ -z "$ts" ]]; then
       echo "No git history for $file, skipping"
