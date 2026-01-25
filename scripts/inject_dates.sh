@@ -9,8 +9,8 @@ find "$POSTS_DIR" -type f -name "*.md" | while read -r file; do
     continue
   fi
 
-  if ! grep -q '^date *= *' "$file"; then
-    ts=$(git log --follow --reverse --format=%aI --max-count=1 -- "$file")
+  if ! grep -qE '^[[:space:]]*date[[:space:]]*=' "$file"; then
+    ts="$(git log --follow --reverse --format=%aI --max-count=1 -- "$file")"
 
     if [[ -z "$ts" ]]; then
       echo "No git history for $file, skipping"
@@ -21,7 +21,7 @@ find "$POSTS_DIR" -type f -name "*.md" | while read -r file; do
 
     awk -v date="$ts" '
       BEGIN { inserted=0 }
-      /^(\+\+\+|---)$/ && inserted==0 {
+      /^\+\+\+$/ && inserted==0 {
         print
         print "date = \"" date "\""
         inserted=1
