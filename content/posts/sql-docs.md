@@ -191,7 +191,7 @@ Once comments are parsed and collected for a file, they are then passed along to
 
 ## cargo +nightly fuzz run sql_docs 
 
-Fuzzing is quickly becoming one of my favorite things. For the uninitiated fuzzing is basically brute-force testing your code, and in my case, for any code state that could result in an unexpected `panic!` due to some bug in my code. Fuzzing is cool, it uses mutations, and [everyone is doing it]()!
+Fuzzing is quickly becoming one of my favorite things. For the uninitiated fuzzing is basically brute-force testing your code, and in my case, for any code state that could result in an unexpected `panic!` due to some bug in my code. Fuzzing is cool, it uses mutations, and [everyone is doing it](https://en.wikipedia.org/wiki/Fuzzing)!
 
 For this crate, I used [cargo fuzz](https://github.com/rust-fuzz/cargo-fuzz), which uses `libFuzzer`. I am quite new to writing a harness, which is the code the fuzzer will use as the entry point to your software, and at first I was using the default `&[u8]` for fuzzing, but after getting some feedback was able to understand that I could get away with using a `String` for fuzzing. My fuzzer looked like this:
 
