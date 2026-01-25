@@ -11,8 +11,7 @@ find "$POSTS_DIR" -type f -name "*.md" | while read -r file; do
   fi
 
   if ! grep -q '^date *= *' "$file"; then
-    ts=$(git log --follow --reverse --format=%aI -- "$file" | head -n 1)
-
+    ts=$(git log --follow --reverse --format=%aI --max-count=1 -- "$file")
 
     if [[ -z "$ts" ]]; then
       echo "No git history for $file, skipping"
@@ -21,7 +20,6 @@ find "$POSTS_DIR" -type f -name "*.md" | while read -r file; do
 
     echo "Injecting date $ts into $file"
 
-    # insert date after front-matter opening +++
     awk -v date="$ts" '
       BEGIN { inserted=0 }
       /^(\+\+\+|---)$/ && inserted==0 {
