@@ -1,0 +1,420 @@
+<!DOCTYPE html><html lang="en-US" xml:lang="en-US">
+  
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="shortcut icon" type="image/png" sizes="32x32" href="https://hemomorphic.alexblood.net/favicon-32x32.png">
+<link rel="alternate" type="application/atom+xml" title="Atom feed" href="https://hemomorphic.alexblood.net/atom.xml">
+<link rel="stylesheet" href="https://hemomorphic.alexblood.net/main.css">
+<meta name="theme-color" content="#151515">
+<meta name="msapplication-navbutton-color" content="#151515">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=example-tracking-id"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'example-tracking-id');
+</script>
+
+<meta name="robots" content="index, follow">
+<meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+<title>./mcp-example | Hemo-Morphic</title>
+<meta name="generator" content="Zola">
+<meta name="description" content="cargo new mcp-serverI have been learning a bit about MCP and to better understand how the protocol can actually be used, specifically with Rust (and hopefully for Rust - but that&#x27;s a story for another…">
+<meta name="author" content="Alex Blood">
+<link rel="canonical" href="https://hemomorphic.alexblood.net/posts/mcp-server/">
+  <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://hemomorphic.alexblood.net/images/logo.png">
+  <meta name="twitter:title" content=".&#x2F;mcp-example">
+  <meta name="twitter:description" content="cargo new mcp-serverI have been learning a bit about MCP and to better understand how the protocol can actually be used, specifically with Rust (and hopefully for Rust - but that&#x27;s a story for another…">
+  
+  <meta property="og:title" content=".&#x2F;mcp-example">
+  <meta property="og:description" content="cargo new mcp-serverI have been learning a bit about MCP and to better understand how the protocol can actually be used, specifically with Rust (and hopefully for Rust - but that&#x27;s a story for another…">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://hemomorphic.alexblood.net/posts/mcp-server/">
+    <meta property="og:image" content="https://hemomorphic.alexblood.net/images/logo.png">
+
+  <meta property="og:site_name" content=".&#x2F;mcp-example">
+  <meta property="og:locale" content="en_US">
+    <meta property="article:published_time" content="2025-11-28T20:15:00+08:00">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://hemomorphic.alexblood.net/posts/mcp-server"
+      },
+      "headline": ".&#x2F;mcp-example",
+      "description": "cargo new mcp-serverI have been learning a bit about MCP and to better understand how the protocol can actually be used, specifically with Rust (and hopefully for Rust - but that&#x27;s a story for another…",
+      "wordcount": "1859",
+      "datePublished": "2025-11-28T20:15:00+08:00",
+      "dateModified": "2025-11-28T20:15:00+08:00",
+      "author": {
+        "@type": "Person",
+        "name": "Alex Blood"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": ".&#x2F;mcp-example",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://hemomorphic.alexblood.net/images/logo.png"
+        }
+      }
+    }
+    </script>
+
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <a id="a-title" href="https://hemomorphic.alexblood.net">
+        <h1>Hemo-Morphic</h1>
+      </a>
+      <h2>Static dispatch in my bloodstream</h2>
+      <nav id="navbar">
+  <a href="https://hemomorphic.alexblood.net/about" class="btn">About</a>
+  <a href="https://hemomorphic.alexblood.net/tags" class="btn">Tags</a>
+  <a href="https://github.com/rpg-alex" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+  <a href="https://buymeacoffee.com/rpg.alex" class="btn">☕ Support me</a>
+</nav>
+</div>
+  </header>
+
+  <div class="container">
+    <main>
+<article class="page">
+  <div class="header-container">
+    <h2>.&#x2F;mcp-example</h2>
+    <div class="improve hide-on-mobiles">
+      
+<a href="https://github.com/rpg-alex/hemomorphic/edit/master/content/posts/mcp-server/index.md" title="Help improve page https://hemomorphic.alexblood.net/posts/mcp-server/">Improve this page</a>
+
+    </div>
+  </div>
+  <div class="page-info">
+    <span>Tags = [
+      <a href="https://hemomorphic.alexblood.net/tags/rust/" class="page-tag">rust</a>,
+      <a href="https://hemomorphic.alexblood.net/tags/blogging/" class="page-tag">blogging</a>,
+      <a href="https://hemomorphic.alexblood.net/tags/mcp/" class="page-tag">mcp</a>,
+      <a href="https://hemomorphic.alexblood.net/tags/llm/" class="page-tag">llm</a>,
+      <a href="https://hemomorphic.alexblood.net/tags/tutorial/" class="page-tag">tutorial</a> ]
+    </span>
+    <time class="page-time smaller" datetime="2025-11-28T20:15:00+08:00">
+      Posted on November 28, 2025 at 20:15 +08
+    </time>
+  </div>
+  <div class="entry">
+    <h1 id="cargo-new-mcp-server">cargo new mcp-server</h1>
+<p>I have been learning a bit about <a href="https://modelcontextprotocol.io/docs/getting-started/intro">MCP</a> and to better understand how the protocol can actually be used, specifically with Rust (and hopefully for Rust - but that's a story for another post!), I started with the <a href="https://github.com/modelcontextprotocol/rust-sdk">Rust SDK</a>.</p>
+<span id="continue-reading"></span>
+<p>After looking around I made my way to the examples directory and found a simple example that implements a counter using the <code>std::io</code>.</p>
+<h2 id="mcp-help-more">mcp --help --more</h2>
+<p>The MCP documentation and explanation is quite good and from the <a href="https://modelcontextprotocol.io/docs/getting-started/intro">MCP Introduction</a> I was able to get a better grasp on what was going on with the counter example.</p>
+<h3 id="man-mcp">man MCP</h3>
+<p>The basic idea of the Model Context Protocol - MCP, is to create a standard means of giving an LLM (the host) context and tools via the server. The way the host is able to interact with the server is through the client. For my purposes the client is VS Code, and the host is Copilot.</p>
+<p><img src="https://hemomorphic.alexblood.net/posts/mcp-server/MCP-Diagram.png" alt="a diagram of how an MCP Server, Client, and Host may interact" /></p>
+<p>The example above illustrates how the llm would engage with a database through an MCP server, along with potentially other MCP servers. Note that the important part here is the Client and server. The MCP server will provide the <code>tools</code> that the LLM will have access to and can itself invoke (via the server).</p>
+<h1 id="rust-sdk-cargo-run-example">Rust SDK: cargo run --example</h1>
+<p>Looking at the Rust SDK repo, there was an example that caught my eye. I'm not looking for a server that would run remotely, so this one looks like a good place to start:</p>
+<blockquote>
+<p><a href="https://github.com/modelcontextprotocol/rust-sdk/tree/main/examples/servers#counter-standard-io-server-counter_stdiors"><strong>Counter Standard I/O Server (<code>counter_stdio.rs</code>)</strong></a></p>
+<p>A basic MCP server that communicates using standard input/output transport.</p>
+<ul>
+<li>Provides a simple counter tool with increment, decrement, and get_value operations</li>
+<li>Demonstrates basic tool implementation and stdio transport</li>
+</ul>
+</blockquote>
+<p>Simple and local! Cracking open the example <a href="https://github.com/modelcontextprotocol/rust-sdk/blob/main/examples/servers/src/counter_stdio.rs"><code>counter_stdio.rs</code></a>, the first thing I notice:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#5fb3b3;">#[</span><span>tokio::main</span><span style="color:#5fb3b3;">]
+</span><span>async </span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">main</span><span style="color:#5fb3b3;">() -&gt; </span><span style="color:#fac863;">Result</span><span style="color:#5fb3b3;">&lt;()&gt; {
+</span><span style="color:#5fb3b3;">...
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>Does it need to be <code>async</code> for std <code>i/o</code>? I don't think so. Reading and writing to stdin/stdout doesn't require an async runtime. But the MCP protocol itself <em>is</em> concurrent, which makes sense for a server right? A server needs to process multiple requests and more without blocking. So it appears the Rust SDK uses <code>async</code> because the protocol does. Which does seem to mean we're going to need to write those extra <code>async</code> boilerplate bits like <code>.await</code> and so on.</p>
+<p>Looking around the <a href="https://github.com/modelcontextprotocol/rust-sdk/blob/main/examples/servers/src/common/counter.rs"><code>counter.rs</code></a> there is a lot going on. The main thing that catches my eye is the <code>#[tool_router]</code>. That looks like where the server's <code>tools</code> are generated for the <strong>host</strong> to use. Here's the first simple tool they give:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span>    </span><span style="color:#5fb3b3;">#[</span><span>tool</span><span style="color:#5fb3b3;">(</span><span>description </span><span style="color:#5fb3b3;">= &quot;</span><span style="color:#99c794;">Increment the counter by 1</span><span style="color:#5fb3b3;">&quot;)]
+</span><span>    async </span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">increment</span><span style="color:#5fb3b3;">(&amp;</span><span style="color:#f99157;">self</span><span style="color:#5fb3b3;">) -&gt; </span><span style="color:#fac863;">Result</span><span style="color:#5fb3b3;">&lt;</span><span>CallToolResult, McpError</span><span style="color:#5fb3b3;">&gt; {
+</span><span>        </span><span style="color:#c594c5;">let mut</span><span> counter </span><span style="color:#5fb3b3;">= </span><span style="color:#ec5f67;">self</span><span style="color:#5fb3b3;">.</span><span>counter</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">lock</span><span style="color:#5fb3b3;">().</span><span>await</span><span style="color:#5fb3b3;">;
+</span><span>        </span><span style="color:#5fb3b3;">*</span><span>counter </span><span style="color:#5fb3b3;">+= </span><span style="color:#f99157;">1</span><span style="color:#5fb3b3;">;
+</span><span>        </span><span style="color:#fac863;">Ok</span><span style="color:#5fb3b3;">(</span><span>CallToolResult</span><span style="color:#5fb3b3;">::</span><span>success</span><span style="color:#5fb3b3;">(</span><span>vec!</span><span style="color:#5fb3b3;">[</span><span>Content</span><span style="color:#5fb3b3;">::</span><span>text</span><span style="color:#5fb3b3;">(
+</span><span>            counter</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">to_string</span><span style="color:#5fb3b3;">(),
+</span><span>        </span><span style="color:#5fb3b3;">)]))
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>That seems fairly simple to understand. Its using <code>.await</code> so we are looking at <code>async</code> here too. It looks like this tool is in the <code>impl</code> for a struct called <code>Counter</code> with a field <code>counter: Arc&lt;Mutex&lt;i32&gt;&gt;,</code> and the tool <code>increment(&amp;self)</code> counts by one. Then something called <code>CallToolResult</code> returns a <code>vec</code> containing the count as a <code>String</code>. It's not the easiest boilerplate upfront but at least there's an example to follow!</p>
+<h2 id="mcp-help-tools">mcp --help --tools</h2>
+<p>An MCP server gives access to the <strong>tools</strong> the <em>host</em> (LLM) can use. The host accesses these tools via the <strong>client</strong>. In the above example something like Copilot in VS Code should be able to see the tools available for the <strong>counter</strong> server thanks to the SDK's <code>#[tool_router]</code> for the <code>Counter</code> struct <code>impl</code>, and the <code>#[tool]</code> macro for the <code>increment(&amp;self)</code> method. Notice the description in the macro?</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#5fb3b3;">#[</span><span>tool</span><span style="color:#5fb3b3;">(</span><span>description </span><span style="color:#5fb3b3;">= &quot;</span><span style="color:#99c794;">Increment the counter by 1</span><span style="color:#5fb3b3;">&quot;)]
+</span></code></pre>
+<p>This is viewable for the host when it queries the server using the <strong>MCP</strong>. So it expects to get a list of tools back first, then it can call those tools as needed.</p>
+<p>It looks like for this example we pass a number and then the host will call this <code>tool</code> repeatedly until it counts to that number.</p>
+<h2 id="mcp-help-prompts">mcp --help --prompts</h2>
+<p>In addition to the <code>tools</code> for the host, we can also generate <strong>prompts</strong> to send to the host via the client. In VS Code this populates the message input field for Copilot chat. The counter example file has two methods <code>example_prompt</code> and <code>counter_analysis</code>. How do we know they are prompts? The macros!</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#5fb3b3;">#[</span><span>prompt</span><span style="color:#5fb3b3;">(</span><span>name </span><span style="color:#5fb3b3;">= &quot;</span><span style="color:#99c794;">example_prompt</span><span style="color:#5fb3b3;">&quot;)]
+</span></code></pre>
+<p>There is once again a lot of boilerplate here, but the <code>example_prompt</code> basically just takes a message we write to the server, then adds <code>This is an example prompt with our message here: </code> before our message and then sends it over to the chat. <strong>NOTE</strong> it <em>thankfully</em> doesn't send the message, it just generates it. A prompt seems like it could be useful to generate based on the available tools on the server and maybe some parameters defined by the user, to help generate a succinct message to the host. Then the host can easily use the tools mentioned in the prompt for whatever purpose.</p>
+<h2 id="mcp-help-handlers">mcp --help --handlers</h2>
+<p>Next there is another <code>impl</code> block for <code>Counter</code> with two macros:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#5fb3b3;">#[</span><span>tool_handler</span><span style="color:#5fb3b3;">]
+</span><span style="color:#5fb3b3;">#[</span><span>prompt_handler</span><span style="color:#5fb3b3;">]
+</span></code></pre>
+<p>This would be where the MCP server can be queried by the host using these methods:</p>
+<ul>
+<li><code>get_info()</code>: returns the server's basic metadata and capabilities. This is how the host knows what the server can do. In this case the server sends back a <code>ServerInfo</code> structure that contains <code>instructions</code> where the server's info is defined.</li>
+<li><code>list_resources()</code>: Lists any resources the server may have. This looks like its not being used for the example.</li>
+<li><code>read_resource(..)</code>: This would read a specific resource, which looks like it could be a file etc. that is then shared with the host. Also not used for this example.</li>
+<li><code>list_resource_templates(..)</code>: I think this is for telling the host the types of resources this server can use.</li>
+<li><code>initialize(..)</code>: This is where the server and host first meet and the server is initialized. In the example its returning <code>get_info()</code> to the host.</li>
+</ul>
+<p>The <code>handler</code> methods don't need a macro themselves, just the <code>impl</code> block. This example really only seems to be using <code>get_info()</code> and <code>initialize(..)</code>, which makes sense for a server that just counts to a number.</p>
+<h1 id="cd-mcp-server">cd mcp-server/</h1>
+<p>Now that we have an idea of what a basic example can look like, maybe we can make one that does something simple like list the files recursively in the current directory and generate a prompt for the server that contains them? Let's go!</p>
+<h2 id="cargo-add">cargo add</h2>
+<p>We need to add our dependencies. I'll mostly follow the example's dependencies but strip it down a bit more:</p>
+<pre data-lang="bash" style="background-color:#2b2c2f;color:#cccece;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#6699cc;">cargo add anyhow 
+</span><span style="color:#6699cc;">cargo add rmcp</span><span style="color:#5fb3b3;"> --</span><span style="color:#f99157;">features</span><span style="color:#6699cc;"> transport-io
+</span><span style="color:#6699cc;">cargo add serde_json
+</span><span style="color:#6699cc;">cargo add tokio</span><span style="color:#5fb3b3;"> --</span><span style="color:#f99157;">features</span><span style="color:#6699cc;"> rt-multi-thread,macros
+</span></code></pre>
+<p>Our <code>Cargo.toml</code> should look something like this so we can use the SDK:</p>
+<pre data-lang="toml" style="background-color:#2b2c2f;color:#cccece;" class="language-toml "><code class="language-toml" data-lang="toml"><span style="color:#5fb3b3;">[package]
+</span><span style="color:#eb606b;">name </span><span style="color:#5fb3b3;">= &quot;</span><span style="color:#99c794;">mcp-server</span><span style="color:#5fb3b3;">&quot;
+</span><span style="color:#eb606b;">version </span><span style="color:#5fb3b3;">= &quot;</span><span style="color:#99c794;">0.1.0</span><span style="color:#5fb3b3;">&quot;
+</span><span style="color:#eb606b;">edition </span><span style="color:#5fb3b3;">= &quot;</span><span style="color:#99c794;">2024</span><span style="color:#5fb3b3;">&quot;
+</span><span>
+</span><span style="color:#5fb3b3;">[dependencies]
+</span><span style="color:#eb606b;">anyhow </span><span style="color:#5fb3b3;">= &quot;</span><span style="color:#99c794;">1.0.100</span><span style="color:#5fb3b3;">&quot;
+</span><span style="color:#eb606b;">rmcp </span><span style="color:#5fb3b3;">= { </span><span style="color:#eb606b;">version </span><span style="color:#5fb3b3;">= &quot;</span><span style="color:#99c794;">0.9.1</span><span style="color:#5fb3b3;">&quot;, </span><span style="color:#eb606b;">features </span><span style="color:#5fb3b3;">= [&quot;</span><span style="color:#99c794;">transport-io</span><span style="color:#5fb3b3;">&quot;] }
+</span><span style="color:#eb606b;">serde_json </span><span style="color:#5fb3b3;">= &quot;</span><span style="color:#99c794;">1.0.145</span><span style="color:#5fb3b3;">&quot;
+</span><span style="color:#eb606b;">tokio </span><span style="color:#5fb3b3;">= { </span><span style="color:#eb606b;">version </span><span style="color:#5fb3b3;">= &quot;</span><span style="color:#99c794;">1.48.0</span><span style="color:#5fb3b3;">&quot;, </span><span style="color:#eb606b;">features </span><span style="color:#5fb3b3;">= [&quot;</span><span style="color:#99c794;">rt-multi-thread</span><span style="color:#5fb3b3;">&quot;, &quot;</span><span style="color:#99c794;">macros</span><span style="color:#5fb3b3;">&quot;] }
+</span></code></pre>
+<h2 id="src-main-rs">src/main.rs</h2>
+<p>For the entry point we'll just mostly copy their example, since it appears to just be an entry point but strip out all the logging:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#5f6364;">//! Entry point for the MCP server
+</span><span>
+</span><span style="color:#c594c5;">mod </span><span>directory_peek</span><span style="color:#5fb3b3;">; </span><span style="color:#5f6364;">// src/directory_peek.rs
+</span><span style="color:#c594c5;">use </span><span>directory_peek</span><span style="color:#5fb3b3;">::</span><span>DirectoryPeek</span><span style="color:#5fb3b3;">;
+</span><span>
+</span><span style="color:#c594c5;">use </span><span>anyhow</span><span style="color:#5fb3b3;">::</span><span>Result</span><span style="color:#5fb3b3;">;
+</span><span style="color:#c594c5;">use </span><span>rmcp</span><span style="color:#5fb3b3;">::{</span><span>ServiceExt</span><span style="color:#5fb3b3;">, </span><span>transport</span><span style="color:#5fb3b3;">::</span><span>stdio</span><span style="color:#5fb3b3;">};
+</span><span>
+</span><span style="color:#5fb3b3;">#[</span><span>tokio::main</span><span style="color:#5fb3b3;">]
+</span><span>async </span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">main</span><span style="color:#5fb3b3;">() -&gt; </span><span style="color:#fac863;">Result</span><span style="color:#5fb3b3;">&lt;()&gt; {
+</span><span>    </span><span style="color:#5f6364;">// Create an instance of the directory-list router
+</span><span>    </span><span style="color:#c594c5;">let</span><span> service </span><span style="color:#5fb3b3;">= </span><span>DirectoryPeek</span><span style="color:#5fb3b3;">::</span><span>new</span><span style="color:#5fb3b3;">().</span><span style="color:#6699cc;">serve</span><span style="color:#5fb3b3;">(</span><span style="color:#6699cc;">stdio</span><span style="color:#5fb3b3;">()).</span><span>await</span><span style="color:#5fb3b3;">?;
+</span><span>    service</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">waiting</span><span style="color:#5fb3b3;">().</span><span>await</span><span style="color:#5fb3b3;">?;
+</span><span>    </span><span style="color:#fac863;">Ok</span><span style="color:#5fb3b3;">(())
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>I barely changed anything besides removing all the logging tooling.</p>
+<h2 id="directory-peek-rs">directory_peek.rs</h2>
+<p>Next we'll make a module for looking at the current working directory content. We could add parameters to specify the directory to look at and the recursive depth allowed, but I think that's moving past the proof of concept. For now let's just grab everything we can find in the current directory. I'm not going to include more than I need to in order to get the job done.</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">use </span><span>std</span><span style="color:#5fb3b3;">::{
+</span><span>    env</span><span style="color:#5fb3b3;">,</span><span> fs</span><span style="color:#5fb3b3;">,
+</span><span>    path</span><span style="color:#5fb3b3;">::{</span><span>Path</span><span style="color:#5fb3b3;">,</span><span> PathBuf</span><span style="color:#5fb3b3;">},
+</span><span>    sync</span><span style="color:#5fb3b3;">::</span><span>Arc</span><span style="color:#5fb3b3;">,
+</span><span style="color:#5fb3b3;">};
+</span><span style="color:#c594c5;">use </span><span>tokio</span><span style="color:#5fb3b3;">::</span><span>sync</span><span style="color:#5fb3b3;">::</span><span>Mutex</span><span style="color:#5fb3b3;">;
+</span><span>
+</span><span style="color:#c594c5;">use </span><span>rmcp</span><span style="color:#5fb3b3;">::{
+</span><span>    ErrorData </span><span style="color:#5fb3b3;">as</span><span> McpError</span><span style="color:#5fb3b3;">,</span><span> RoleServer</span><span style="color:#5fb3b3;">,</span><span> ServerHandler</span><span style="color:#5fb3b3;">,
+</span><span>    handler</span><span style="color:#5fb3b3;">::</span><span>server</span><span style="color:#5fb3b3;">::{
+</span><span>        router</span><span style="color:#5fb3b3;">::{</span><span>prompt</span><span style="color:#5fb3b3;">::</span><span>PromptRouter</span><span style="color:#5fb3b3;">, </span><span>tool</span><span style="color:#5fb3b3;">::</span><span>ToolRouter</span><span style="color:#5fb3b3;">},
+</span><span>        wrapper</span><span style="color:#5fb3b3;">::</span><span>Parameters</span><span style="color:#5fb3b3;">,
+</span><span>    </span><span style="color:#5fb3b3;">},
+</span><span>    model</span><span style="color:#5fb3b3;">::{
+</span><span>        CallToolResult</span><span style="color:#5fb3b3;">,</span><span> Content</span><span style="color:#5fb3b3;">,</span><span> GetPromptRequestParam</span><span style="color:#5fb3b3;">,</span><span> GetPromptResult</span><span style="color:#5fb3b3;">,</span><span> Implementation</span><span style="color:#5fb3b3;">,
+</span><span>        InitializeRequestParam</span><span style="color:#5fb3b3;">,</span><span> InitializeResult</span><span style="color:#5fb3b3;">,</span><span> JsonObject</span><span style="color:#5fb3b3;">,</span><span> ListPromptsResult</span><span style="color:#5fb3b3;">,
+</span><span>        PaginatedRequestParam</span><span style="color:#5fb3b3;">,</span><span> PromptMessage</span><span style="color:#5fb3b3;">,</span><span> PromptMessageRole</span><span style="color:#5fb3b3;">,</span><span> ProtocolVersion</span><span style="color:#5fb3b3;">,
+</span><span>        ServerCapabilities</span><span style="color:#5fb3b3;">,</span><span> ServerInfo</span><span style="color:#5fb3b3;">,
+</span><span>    </span><span style="color:#5fb3b3;">},
+</span><span>    prompt</span><span style="color:#5fb3b3;">,</span><span> prompt_handler</span><span style="color:#5fb3b3;">,</span><span> prompt_router</span><span style="color:#5fb3b3;">,</span><span> serde_json</span><span style="color:#5fb3b3;">,
+</span><span>    service</span><span style="color:#5fb3b3;">::</span><span>RequestContext</span><span style="color:#5fb3b3;">,
+</span><span>    tool</span><span style="color:#5fb3b3;">,</span><span> tool_handler</span><span style="color:#5fb3b3;">,</span><span> tool_router</span><span style="color:#5fb3b3;">,
+</span><span style="color:#5fb3b3;">};
+</span><span>
+</span><span style="color:#5f6364;">// Recursively collect all files under `dir` (I did mention recursion!)
+</span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">collect_files</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">dir</span><span style="color:#5fb3b3;">: &amp;</span><span>Path, </span><span style="color:#f99157;">acc</span><span style="color:#5fb3b3;">: &amp;</span><span style="color:#c594c5;">mut </span><span style="color:#fac863;">Vec</span><span style="color:#5fb3b3;">&lt;</span><span>PathBuf</span><span style="color:#5fb3b3;">&gt;) {
+</span><span>    </span><span style="color:#c594c5;">if let </span><span style="color:#fac863;">Ok</span><span style="color:#5fb3b3;">(</span><span>entries</span><span style="color:#5fb3b3;">) = </span><span>fs</span><span style="color:#5fb3b3;">::</span><span>read_dir</span><span style="color:#5fb3b3;">(</span><span>dir</span><span style="color:#5fb3b3;">) {
+</span><span>        </span><span style="color:#c594c5;">for</span><span> entry </span><span style="color:#5fb3b3;">in</span><span> entries</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">flatten</span><span style="color:#5fb3b3;">() {
+</span><span>            </span><span style="color:#c594c5;">let</span><span> path </span><span style="color:#5fb3b3;">=</span><span> entry</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">path</span><span style="color:#5fb3b3;">();
+</span><span>            </span><span style="color:#c594c5;">if</span><span> path</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">is_dir</span><span style="color:#5fb3b3;">() {
+</span><span>                </span><span style="color:#6699cc;">collect_files</span><span style="color:#5fb3b3;">(&amp;</span><span>path</span><span style="color:#5fb3b3;">,</span><span> acc</span><span style="color:#5fb3b3;">);
+</span><span>            </span><span style="color:#5fb3b3;">} </span><span style="color:#c594c5;">else if</span><span> path</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">is_file</span><span style="color:#5fb3b3;">() {
+</span><span>                acc</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">push</span><span style="color:#5fb3b3;">(</span><span>path</span><span style="color:#5fb3b3;">);
+</span><span>            </span><span style="color:#5fb3b3;">}
+</span><span>        </span><span style="color:#5fb3b3;">}
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span style="color:#5f6364;">/// Structure for holding the current directory&#39;s content
+</span><span style="color:#5fb3b3;">#[</span><span>derive</span><span style="color:#5fb3b3;">(</span><span>Clone</span><span style="color:#5fb3b3;">)]
+</span><span style="color:#c594c5;">pub struct </span><span>DirectoryPeek </span><span style="color:#5fb3b3;">{
+</span><span>    files</span><span style="color:#5fb3b3;">: </span><span>Arc</span><span style="color:#5fb3b3;">&lt;</span><span>Mutex</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#fac863;">Vec</span><span style="color:#5fb3b3;">&lt;</span><span>PathBuf</span><span style="color:#5fb3b3;">&gt;&gt;&gt;</span><span>,
+</span><span>    tool_router</span><span style="color:#5fb3b3;">: </span><span>ToolRouter</span><span style="color:#5fb3b3;">&lt;</span><span>DirectoryPeek</span><span style="color:#5fb3b3;">&gt;</span><span>,
+</span><span>    prompt_router</span><span style="color:#5fb3b3;">: </span><span>PromptRouter</span><span style="color:#5fb3b3;">&lt;</span><span>DirectoryPeek</span><span style="color:#5fb3b3;">&gt;</span><span>,
+</span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span style="color:#5fb3b3;">#[</span><span>tool_router</span><span style="color:#5fb3b3;">]
+</span><span style="color:#c594c5;">impl </span><span>DirectoryPeek </span><span style="color:#5fb3b3;">{
+</span><span>    </span><span style="color:#c594c5;">pub fn </span><span style="color:#6699cc;">new</span><span style="color:#5fb3b3;">() -&gt; </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#c594c5;">let mut</span><span> files </span><span style="color:#5fb3b3;">= </span><span style="color:#fac863;">Vec</span><span style="color:#5fb3b3;">::</span><span>new</span><span style="color:#5fb3b3;">();
+</span><span>
+</span><span>        </span><span style="color:#c594c5;">if let </span><span style="color:#fac863;">Ok</span><span style="color:#5fb3b3;">(</span><span>cwd</span><span style="color:#5fb3b3;">) = </span><span>env</span><span style="color:#5fb3b3;">::</span><span>current_dir</span><span style="color:#5fb3b3;">() {
+</span><span>            </span><span style="color:#6699cc;">collect_files</span><span style="color:#5fb3b3;">(&amp;</span><span>cwd</span><span style="color:#5fb3b3;">, &amp;</span><span style="color:#c594c5;">mut</span><span> files</span><span style="color:#5fb3b3;">);
+</span><span>        </span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span>        </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>            files</span><span style="color:#5fb3b3;">: </span><span>Arc</span><span style="color:#5fb3b3;">::</span><span>new</span><span style="color:#5fb3b3;">(</span><span>Mutex</span><span style="color:#5fb3b3;">::</span><span>new</span><span style="color:#5fb3b3;">(</span><span>files</span><span style="color:#5fb3b3;">)),
+</span><span>            tool_router</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>tool_router</span><span style="color:#5fb3b3;">(),
+</span><span>            prompt_router</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>prompt_router</span><span style="color:#5fb3b3;">(),
+</span><span>        </span><span style="color:#5fb3b3;">}
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span>    </span><span style="color:#5f6364;">/// List all files under the working directory as newline-separated paths
+</span><span>    </span><span style="color:#5fb3b3;">#[</span><span>tool</span><span style="color:#5fb3b3;">(</span><span>description </span><span style="color:#5fb3b3;">= &quot;</span><span style="color:#99c794;">List all files under the server&#39;s working directory</span><span style="color:#5fb3b3;">&quot;)]
+</span><span>    async </span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">list_files</span><span style="color:#5fb3b3;">(&amp;</span><span style="color:#f99157;">self</span><span style="color:#5fb3b3;">) -&gt; </span><span style="color:#fac863;">Result</span><span style="color:#5fb3b3;">&lt;</span><span>CallToolResult, McpError</span><span style="color:#5fb3b3;">&gt; {
+</span><span>        </span><span style="color:#c594c5;">let</span><span> files </span><span style="color:#5fb3b3;">= </span><span style="color:#ec5f67;">self</span><span style="color:#5fb3b3;">.</span><span>files</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">lock</span><span style="color:#5fb3b3;">().</span><span>await</span><span style="color:#5fb3b3;">;
+</span><span>        </span><span style="color:#c594c5;">let</span><span> listing </span><span style="color:#5fb3b3;">=</span><span> files
+</span><span>            </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">iter</span><span style="color:#5fb3b3;">()
+</span><span>            </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">map</span><span style="color:#5fb3b3;">(|</span><span style="color:#f99157;">p</span><span style="color:#5fb3b3;">| </span><span>p</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">to_string_lossy</span><span style="color:#5fb3b3;">())
+</span><span>            </span><span style="color:#5fb3b3;">.</span><span>collect</span><span style="color:#5fb3b3;">::&lt;</span><span style="color:#fac863;">Vec</span><span style="color:#5fb3b3;">&lt;_&gt;&gt;()
+</span><span>            </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">join</span><span style="color:#5fb3b3;">(&quot;\n&quot;);
+</span><span>
+</span><span>        </span><span style="color:#fac863;">Ok</span><span style="color:#5fb3b3;">(</span><span>CallToolResult</span><span style="color:#5fb3b3;">::</span><span>success</span><span style="color:#5fb3b3;">(</span><span>vec!</span><span style="color:#5fb3b3;">[</span><span>Content</span><span style="color:#5fb3b3;">::</span><span>text</span><span style="color:#5fb3b3;">(</span><span>listing</span><span style="color:#5fb3b3;">)]))
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span style="color:#5fb3b3;">#[</span><span>prompt_router</span><span style="color:#5fb3b3;">]
+</span><span style="color:#c594c5;">impl </span><span>DirectoryPeek </span><span style="color:#5fb3b3;">{
+</span><span>    </span><span style="color:#5f6364;">/// Summarize the directory contents and show a short preview
+</span><span>    </span><span style="color:#5fb3b3;">#[</span><span>prompt</span><span style="color:#5fb3b3;">(</span><span>name </span><span style="color:#5fb3b3;">= &quot;</span><span style="color:#99c794;">directory_summary</span><span style="color:#5fb3b3;">&quot;)]
+</span><span>    async </span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">directory_summary</span><span style="color:#5fb3b3;">(
+</span><span>        </span><span style="color:#5fb3b3;">&amp;</span><span style="color:#f99157;">self</span><span>,
+</span><span>        </span><span style="color:#f99157;">_params</span><span style="color:#5fb3b3;">: </span><span>Parameters</span><span style="color:#5fb3b3;">&lt;</span><span>JsonObject</span><span style="color:#5fb3b3;">&gt;</span><span>,
+</span><span>        </span><span style="color:#f99157;">_ctx</span><span style="color:#5fb3b3;">: </span><span>RequestContext</span><span style="color:#5fb3b3;">&lt;</span><span>RoleServer</span><span style="color:#5fb3b3;">&gt;</span><span>,
+</span><span>    </span><span style="color:#5fb3b3;">) -&gt; </span><span style="color:#fac863;">Result</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#fac863;">Vec</span><span style="color:#5fb3b3;">&lt;</span><span>PromptMessage</span><span style="color:#5fb3b3;">&gt;</span><span>, McpError</span><span style="color:#5fb3b3;">&gt; {
+</span><span>        </span><span style="color:#c594c5;">let</span><span> message </span><span style="color:#5fb3b3;">= &quot;</span><span style="color:#99c794;">Take a look at all these files!</span><span style="color:#5fb3b3;">\n&quot;;
+</span><span>        </span><span style="color:#c594c5;">let</span><span> files </span><span style="color:#5fb3b3;">= </span><span style="color:#ec5f67;">self</span><span style="color:#5fb3b3;">.</span><span>files</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">lock</span><span style="color:#5fb3b3;">().</span><span>await</span><span style="color:#5fb3b3;">;
+</span><span>        </span><span style="color:#c594c5;">let</span><span> list </span><span style="color:#5fb3b3;">=</span><span> files
+</span><span>            </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">iter</span><span style="color:#5fb3b3;">()
+</span><span>            </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">map</span><span style="color:#5fb3b3;">(|</span><span style="color:#f99157;">p</span><span style="color:#5fb3b3;">| </span><span>format!</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">- {}</span><span style="color:#5fb3b3;">&quot;,</span><span> p</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">to_string_lossy</span><span style="color:#5fb3b3;">()))
+</span><span>            </span><span style="color:#5fb3b3;">.</span><span>collect</span><span style="color:#5fb3b3;">::&lt;</span><span style="color:#fac863;">Vec</span><span style="color:#5fb3b3;">&lt;_&gt;&gt;()
+</span><span>            </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">join</span><span style="color:#5fb3b3;">(&quot;\n&quot;);
+</span><span>        </span><span style="color:#c594c5;">let</span><span> output </span><span style="color:#5fb3b3;">=</span><span> message</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">to_string</span><span style="color:#5fb3b3;">() + &amp;</span><span>list</span><span style="color:#5fb3b3;">;
+</span><span>        </span><span style="color:#fac863;">Ok</span><span style="color:#5fb3b3;">(</span><span>vec!</span><span style="color:#5fb3b3;">[</span><span>PromptMessage</span><span style="color:#5fb3b3;">::</span><span>new_text</span><span style="color:#5fb3b3;">(</span><span>PromptMessageRole</span><span style="color:#5fb3b3;">::</span><span>User</span><span style="color:#5fb3b3;">,</span><span> output</span><span style="color:#5fb3b3;">)])
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span style="color:#5fb3b3;">#[</span><span>tool_handler</span><span style="color:#5fb3b3;">]
+</span><span style="color:#5fb3b3;">#[</span><span>prompt_handler</span><span style="color:#5fb3b3;">]
+</span><span style="color:#c594c5;">impl </span><span>ServerHandler </span><span style="color:#c594c5;">for </span><span>DirectoryPeek </span><span style="color:#5fb3b3;">{
+</span><span>    </span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">get_info</span><span style="color:#5fb3b3;">(&amp;</span><span style="color:#f99157;">self</span><span style="color:#5fb3b3;">) -&gt;</span><span> ServerInfo </span><span style="color:#5fb3b3;">{
+</span><span>        ServerInfo </span><span style="color:#5fb3b3;">{
+</span><span>            protocol_version</span><span style="color:#5fb3b3;">: </span><span>ProtocolVersion</span><span style="color:#5fb3b3;">::</span><span>V_2024_11_05</span><span style="color:#5fb3b3;">,
+</span><span>            capabilities</span><span style="color:#5fb3b3;">: </span><span>ServerCapabilities</span><span style="color:#5fb3b3;">::</span><span>builder</span><span style="color:#5fb3b3;">()
+</span><span>                </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">enable_tools</span><span style="color:#5fb3b3;">()
+</span><span>                </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">enable_prompts</span><span style="color:#5fb3b3;">()
+</span><span>                </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">build</span><span style="color:#5fb3b3;">(),
+</span><span>            server_info</span><span style="color:#5fb3b3;">: </span><span>Implementation</span><span style="color:#5fb3b3;">::</span><span>from_build_env</span><span style="color:#5fb3b3;">(),
+</span><span>            instructions</span><span style="color:#5fb3b3;">: </span><span style="color:#fac863;">Some</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">DirectoryPeek exposes a directory-listing tool and a directory summary prompt.</span><span style="color:#5fb3b3;">&quot;.</span><span style="color:#6699cc;">to_string</span><span style="color:#5fb3b3;">()),
+</span><span>        </span><span style="color:#5fb3b3;">}
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span>    async </span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">initialize</span><span style="color:#5fb3b3;">(
+</span><span>        </span><span style="color:#5fb3b3;">&amp;</span><span style="color:#f99157;">self</span><span>,
+</span><span>        </span><span style="color:#f99157;">_req</span><span style="color:#5fb3b3;">:</span><span> InitializeRequestParam,
+</span><span>        </span><span style="color:#f99157;">_ctx</span><span style="color:#5fb3b3;">: </span><span>RequestContext</span><span style="color:#5fb3b3;">&lt;</span><span>RoleServer</span><span style="color:#5fb3b3;">&gt;</span><span>,
+</span><span>    </span><span style="color:#5fb3b3;">) -&gt; </span><span style="color:#fac863;">Result</span><span style="color:#5fb3b3;">&lt;</span><span>InitializeResult, McpError</span><span style="color:#5fb3b3;">&gt; {
+</span><span>        </span><span style="color:#fac863;">Ok</span><span style="color:#5fb3b3;">(</span><span style="color:#ec5f67;">self</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">get_info</span><span style="color:#5fb3b3;">())
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>This seems like the simplest form of a server we're going to get for this functionality. The <code>collect_files(dir: &amp;Path, acc: &amp;mut Vec&lt;PathBuf&gt;)</code> will recursively collect all files. That's probably a bad idea since I'm not ignoring any directories right now (what could possibly go wrong?!). If we wanted to expand the project later we'd probably want to fix that first.</p>
+<p>Now we just need to run our server in VS Code to generate our prompt or use our tool. That means we gotta add it to VS Code.</p>
+<h2 id="code-mcp-server">code mcp-server</h2>
+<p>I think there are a few ways to add our server to VS Code. It looks like we can manually generate the <code>.vscode/mcp.json</code> but I would rather use the command palette's prompts. So on Linux: <code>Ctrl+Shift+P</code> and then select <code>MCP: Add Server...</code> and then <code>Command (stdio)</code> and then <code>cargo run</code>. I feel like its a little dirty and it will only work if we stay in the root of our mcp-server project, but its a proof of concept. So lets prove the concept.</p>
+<p><strong>note:</strong> in my case I did have to tweak the <code>json</code> it generated to the full path for my cargo installation, which we can see if we do:</p>
+<pre data-lang="bash" style="background-color:#2b2c2f;color:#cccece;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#6699cc;">which cargo
+</span></code></pre>
+<p>in my case its: <code>/home/alex/.cargo/bin/cargo</code>. So the fixed <code>mcp.json</code> should look something like this:</p>
+<pre data-lang="json" style="background-color:#2b2c2f;color:#cccece;" class="language-json "><code class="language-json" data-lang="json"><span style="color:#5fb3b3;">{
+</span><span>	</span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">servers</span><span style="color:#5fb3b3;">&quot;: {
+</span><span>		</span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">directory-list</span><span style="color:#5fb3b3;">&quot;: {
+</span><span>			</span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">type</span><span style="color:#5fb3b3;">&quot;: &quot;</span><span style="color:#99c794;">stdio</span><span style="color:#5fb3b3;">&quot;,
+</span><span>			</span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">command</span><span style="color:#5fb3b3;">&quot;: &quot;</span><span style="color:#99c794;">/home/alex/.cargo/bin/cargo</span><span style="color:#5fb3b3;">&quot;,
+</span><span>			</span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">args</span><span style="color:#5fb3b3;">&quot;: [
+</span><span>				</span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">run</span><span style="color:#5fb3b3;">&quot;
+</span><span>			</span><span style="color:#5fb3b3;">]
+</span><span>		</span><span style="color:#5fb3b3;">}
+</span><span>	</span><span style="color:#5fb3b3;">},
+</span><span>	</span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">inputs</span><span style="color:#5fb3b3;">&quot;: []
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>In VS Code I just called my server <code>directory-list</code>.</p>
+<h3 id="ctrl-shift-p-directory-list">Ctrl + Shift + P directory-list</h3>
+<p>Now to test it out I'll do the prompt generation. For the first run I found that I needed to remind VS Code that I added a server, so in the command palette select <code>MCP: List Servers</code> and then select our server.</p>
+<p>Then in the Agent chat if we type a forward slash (<code>/</code>) we should see a list of commands and one will be: <code>mcp.directory-list.directory_summary</code> which if we remember was the name we gave it in <code>directory_peek.rs</code>!</p>
+<p>If we select that command, it should generate our file list directly into the agent message box (which will be really long, probably too long to send to the LLM! But it works! Kinda.):</p>
+<blockquote>
+<p>Take a look at all these files!</p>
+<ul>
+<li>/home/alex/Projects/mcp-server/.git/hooks/applypatch-msg.sample</li>
+<li>(the rest of the insanely long list of files)</li>
+</ul>
+</blockquote>
+<p>We can also try the tool out directly, we would ask the agent to call it. It should do the same thing as the prompt. I don't advise it without maybe limiting the values that it will return, maybe it would be better if it only returned the content of the <code>src</code> directory? Or there was a max depth and max entry count? The sky's the limit! Also remember that with Copilot we can run out of messages.</p>
+<h1 id="ctrl-c">Ctrl + c</h1>
+<p>While I'm not sure recursively listing every file in a cargo project is the most meaningful or productive functionality an MCP server can have, it does give us some groundwork for building a better server.</p>
+<p>We looked at:</p>
+<ul>
+<li>the relationship between the <strong>Client</strong>, <strong>Server</strong>, <strong>Host</strong></li>
+<li>Adapting an existing example from the documentation to learn more about how it works</li>
+<li>The bare minimum an MCP Server needs to be able to be used by a host</li>
+<li>How to recursively look at everything in a directory.</li>
+<li>Sending data from our server to the client as a prompt</li>
+</ul>
+<p>Thanks for following along! And a final piece of advice if we continue developing an MCP Server, <strong>don't have Copilot use our server's tools</strong>, use <a href="https://modelcontextprotocol.io/docs/tools/inspector">MCP Inspector</a>. Otherwise we'd use up all our messages way too fast. MCP inspector works really well but I didn't want this post to be too much longer so I skipped using it for testing the <code>tool</code> we made and focused on the <code>prompt</code>.</p>
+
+  </div><div class="giscus comments"></div>
+<script src="https://giscus.app/client.js"
+        data-repo="rpg-alex&#x2F;hemomorphic"
+        data-repo-id="R_kgDOQVq14Q"
+        data-category="Blog comments"
+        data-category-id="DIC_kwDOQVq14c4CzJUG"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="transparent_dark"
+        data-lang="en"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</article>
+
+    </main>
+  </div>
+  <footer><a href="mailto:mralexblood@outlook.com"><i class="svg-icon icon-mail"></i></a><a href="https://github.com/rpg-alex"><i class="svg-icon icon-github-circled"></i></a><a href="https://buymeacoffee.com/rpg.alex"><img
+    class="svg-icon"
+    src="https://hemomorphic.alexblood.net/images/bmc-brand-icon.svg"
+    alt="☕"
+    
+  ></a>
+<span class="copyright">&copy; 2025 - 2026 Alex Blood</span>
+</footer>
+  <script src="https://hemomorphic.alexblood.net/js/copy-code.js" defer></script>
+</body>
+
+</html>

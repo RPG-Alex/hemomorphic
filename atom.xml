@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Hemo-Morphic</title>
+    <subtitle>Static dispatch in my bloodstream</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://hemomorphic.alexblood.net/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://hemomorphic.alexblood.net"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-02-01T19:00:50+08:00</updated>
+    <id>https://hemomorphic.alexblood.net/atom.xml</id>
+    <entry xml:lang="en">
+        <title>post.explain_builders().build()</title>
+        <published>2026-02-01T19:00:50+08:00</published>
+        <updated>2026-02-01T19:00:50+08:00</updated>
+        
+        <author>
+          <name>
+            
+              Alex Blood
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://hemomorphic.alexblood.net/posts/builders/"/>
+        <id>https://hemomorphic.alexblood.net/posts/builders/</id>
+        
+        <summary type="html">&lt;h1 id=&quot;struct-builder&quot;&gt;struct Builder&lt;&#x2F;h1&gt;
+&lt;p&gt;In my last &lt;a href=&quot;https:&#x2F;&#x2F;hemomorphic.alexblood.net&#x2F;posts&#x2F;sql-docs&#x2F;&quot;&gt;post&lt;&#x2F;a&gt; I started to explore using the &lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Builder_pattern&quot;&gt;&lt;code&gt;builder&lt;&#x2F;code&gt; pattern&lt;&#x2F;a&gt; in Rust. In this post I want to go a bit more in depth about what a &lt;code&gt;builder&lt;&#x2F;code&gt; is and why it can be a versatile, &lt;em&gt;idiomatic&lt;&#x2F;em&gt; tool. They are especially helpful in situations where you might otherwise reach for patterns you are used to coming from another language and be wondering how to do the same in Rust without falling into an anti-pattern or battling the &lt;a href=&quot;https:&#x2F;&#x2F;doc.rust-lang.org&#x2F;1.8.0&#x2F;book&#x2F;references-and-borrowing.html&quot;&gt;borrow checker&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Builders are a handy and &lt;em&gt;idiomatic&lt;&#x2F;em&gt; pattern to use when:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;You want to use something like &lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Function_overloading&quot;&gt;overloading&lt;&#x2F;a&gt; (if you are coming from an Object Oriented Language)&lt;&#x2F;li&gt;
+&lt;li&gt;would like to have &lt;code&gt;default&lt;&#x2F;code&gt; values that can be overwritten when needed at creation&lt;&#x2F;li&gt;
+&lt;li&gt;Have a large number of possible inputs&lt;&#x2F;li&gt;
+&lt;li&gt;Want optional add-ons&lt;&#x2F;li&gt;
+&lt;li&gt;or anywhere you don&#x27;t want a &lt;code&gt;new(..)&lt;&#x2F;code&gt; method that looks like a grocery list.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>&#x2F;&#x2F; sql-docs: published on crates.io!</title>
+        <published>2026-01-25T19:47:08+08:00</published>
+        <updated>2026-01-25T19:47:08+08:00</updated>
+        
+        <author>
+          <name>
+            
+              Alex Blood
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://hemomorphic.alexblood.net/posts/sql-docs/"/>
+        <id>https://hemomorphic.alexblood.net/posts/sql-docs/</id>
+        
+        <summary type="html">&lt;h1 id=&quot;cargo-publish-sql-docs&quot;&gt;cargo publish &lt;a href=&quot;https:&#x2F;&#x2F;crates.io&#x2F;crates&#x2F;sql_docs&quot;&gt;&lt;code&gt;sql-docs&lt;&#x2F;code&gt;&lt;&#x2F;a&gt;&lt;&#x2F;h1&gt;
+&lt;p&gt;I am happy to announce that I have completed my first crate and published it to &lt;em&gt;&lt;a href=&quot;https:&#x2F;&#x2F;crates.io&quot;&gt;crates.io&lt;&#x2F;a&gt;&lt;&#x2F;em&gt;!&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>.&#x2F;mcp-example</title>
+        <published>2025-11-28T20:15:00+08:00</published>
+        <updated>2025-11-28T20:15:00+08:00</updated>
+        
+        <author>
+          <name>
+            
+              Alex Blood
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://hemomorphic.alexblood.net/posts/mcp-server/"/>
+        <id>https://hemomorphic.alexblood.net/posts/mcp-server/</id>
+        
+        <summary type="html">&lt;h1 id=&quot;cargo-new-mcp-server&quot;&gt;cargo new mcp-server&lt;&#x2F;h1&gt;
+&lt;p&gt;I have been learning a bit about &lt;a href=&quot;https:&#x2F;&#x2F;modelcontextprotocol.io&#x2F;docs&#x2F;getting-started&#x2F;intro&quot;&gt;MCP&lt;&#x2F;a&gt; and to better understand how the protocol can actually be used, specifically with Rust (and hopefully for Rust - but that&#x27;s a story for another post!), I started with the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;modelcontextprotocol&#x2F;rust-sdk&quot;&gt;Rust SDK&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>init hemomorphic&#x2F;</title>
+        <published>2025-11-14T22:04:00+08:00</published>
+        <updated>2025-11-14T22:04:00+08:00</updated>
+        
+        <author>
+          <name>
+            
+              Alex Blood
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://hemomorphic.alexblood.net/posts/init/"/>
+        <id>https://hemomorphic.alexblood.net/posts/init/</id>
+        
+        <summary type="html">&lt;h1 id=&quot;init-hemomorphic-introduction&quot;&gt;init hemomorphic&#x2F; --introduction&lt;&#x2F;h1&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b2c2f;color:#cccece;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#5fb3b3;&quot;&gt;===========================================================================================
+&lt;&#x2F;span&gt;&lt;span&gt;██╗  ██╗███████╗███╗   ███╗ ██████╗ ███╗   ███╗ ██████╗ ██████╗ ██████╗ ██╗  ██╗██╗ ██████╗
+&lt;&#x2F;span&gt;&lt;span&gt;██║  ██║██╔════╝████╗ ████║██╔═══██╗████╗ ████║██╔═══██╗██╔══██╗██╔══██╗██║  ██║██║██╔════╝
+&lt;&#x2F;span&gt;&lt;span&gt;███████║█████╗  ██╔████╔██║██║   ██║██╔████╔██║██║   ██║██████╔╝██████╔╝███████║██║██║     
+&lt;&#x2F;span&gt;&lt;span&gt;██╔══██║██╔══╝  ██║╚██╔╝██║██║   ██║██║╚██╔╝██║██║   ██║██╔══██╗██╔═══╝ ██╔══██║██║██║     
+&lt;&#x2F;span&gt;&lt;span&gt;██║  ██║███████╗██║ ╚═╝ ██║╚██████╔╝██║ ╚═╝ ██║╚██████╔╝██║  ██║██║     ██║  ██║██║╚██████╗
+&lt;&#x2F;span&gt;&lt;span&gt;╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝ ╚═════╝ ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝╚═╝ ╚═════╝
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5fb3b3;&quot;&gt;===========================================================================================
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Welcome to my blog. My name is Alex Blood. This is the initial blog post and marks the beginning of a blog I have been wanting to create for a long time.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+</feed>

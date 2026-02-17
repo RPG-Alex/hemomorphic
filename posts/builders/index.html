@@ -1,0 +1,430 @@
+<!DOCTYPE html><html lang="en-US" xml:lang="en-US">
+  
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="shortcut icon" type="image/png" sizes="32x32" href="https://hemomorphic.alexblood.net/favicon-32x32.png">
+<link rel="alternate" type="application/atom+xml" title="Atom feed" href="https://hemomorphic.alexblood.net/atom.xml">
+<link rel="stylesheet" href="https://hemomorphic.alexblood.net/main.css">
+<meta name="theme-color" content="#151515">
+<meta name="msapplication-navbutton-color" content="#151515">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=example-tracking-id"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'example-tracking-id');
+</script>
+
+<meta name="robots" content="index, follow">
+<meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+<title>post.explain_builders().build() | Hemo-Morphic</title>
+<meta name="generator" content="Zola">
+<meta name="description" content="struct BuilderIn my last post I started to explore using the builder pattern in Rust. In this post I want to go a bit more in depth about what a builder is and why it can be a versatile, idiomatic too…">
+<meta name="author" content="Alex Blood">
+<link rel="canonical" href="https://hemomorphic.alexblood.net/posts/builders/">
+  <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://hemomorphic.alexblood.net/images/logo.png">
+  <meta name="twitter:title" content="post.explain_builders().build()">
+  <meta name="twitter:description" content="struct BuilderIn my last post I started to explore using the builder pattern in Rust. In this post I want to go a bit more in depth about what a builder is and why it can be a versatile, idiomatic too…">
+  
+  <meta property="og:title" content="post.explain_builders().build()">
+  <meta property="og:description" content="struct BuilderIn my last post I started to explore using the builder pattern in Rust. In this post I want to go a bit more in depth about what a builder is and why it can be a versatile, idiomatic too…">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://hemomorphic.alexblood.net/posts/builders/">
+    <meta property="og:image" content="https://hemomorphic.alexblood.net/images/logo.png">
+
+  <meta property="og:site_name" content="post.explain_builders().build()">
+  <meta property="og:locale" content="en_US">
+    <meta property="article:published_time" content="2026-02-01T19:00:50+08:00">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://hemomorphic.alexblood.net/posts/builders"
+      },
+      "headline": "post.explain_builders().build()",
+      "description": "struct BuilderIn my last post I started to explore using the builder pattern in Rust. In this post I want to go a bit more in depth about what a builder is and why it can be a versatile, idiomatic too…",
+      "wordcount": "1431",
+      "datePublished": "2026-02-01T19:00:50+08:00",
+      "dateModified": "2026-02-01T19:00:50+08:00",
+      "author": {
+        "@type": "Person",
+        "name": "Alex Blood"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "post.explain_builders().build()",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://hemomorphic.alexblood.net/images/logo.png"
+        }
+      }
+    }
+    </script>
+
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <a id="a-title" href="https://hemomorphic.alexblood.net">
+        <h1>Hemo-Morphic</h1>
+      </a>
+      <h2>Static dispatch in my bloodstream</h2>
+      <nav id="navbar">
+  <a href="https://hemomorphic.alexblood.net/about" class="btn">About</a>
+  <a href="https://hemomorphic.alexblood.net/tags" class="btn">Tags</a>
+  <a href="https://github.com/rpg-alex" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+  <a href="https://buymeacoffee.com/rpg.alex" class="btn">☕ Support me</a>
+</nav>
+</div>
+  </header>
+
+  <div class="container">
+    <main>
+<article class="page">
+  <div class="header-container">
+    <h2>post.explain_builders().build()</h2>
+    <div class="improve hide-on-mobiles">
+      
+<a href="https://github.com/rpg-alex/hemomorphic/edit/master/content/posts/builders.md" title="Help improve page https://hemomorphic.alexblood.net/posts/builders/">Improve this page</a>
+
+    </div>
+  </div>
+  <div class="page-info">
+    <span>Tags = [
+      <a href="https://hemomorphic.alexblood.net/tags/rust/" class="page-tag">rust</a>,
+      <a href="https://hemomorphic.alexblood.net/tags/blogging/" class="page-tag">blogging</a>,
+      <a href="https://hemomorphic.alexblood.net/tags/builder-pattern/" class="page-tag">builder-pattern</a>,
+      <a href="https://hemomorphic.alexblood.net/tags/idiomatic/" class="page-tag">idiomatic</a>,
+      <a href="https://hemomorphic.alexblood.net/tags/build-patterns/" class="page-tag">build-patterns</a> ]
+    </span>
+    <time class="page-time smaller" datetime="2026-02-01T19:00:50+08:00">
+      Posted on February  1, 2026 at 19:00 +08
+    </time>
+  </div>
+  <div class="entry">
+    <h1 id="struct-builder">struct Builder</h1>
+<p>In my last <a href="https://hemomorphic.alexblood.net/posts/sql-docs/">post</a> I started to explore using the <a href="https://en.wikipedia.org/wiki/Builder_pattern"><code>builder</code> pattern</a> in Rust. In this post I want to go a bit more in depth about what a <code>builder</code> is and why it can be a versatile, <em>idiomatic</em> tool. They are especially helpful in situations where you might otherwise reach for patterns you are used to coming from another language and be wondering how to do the same in Rust without falling into an anti-pattern or battling the <a href="https://doc.rust-lang.org/1.8.0/book/references-and-borrowing.html">borrow checker</a>.</p>
+<p>Builders are a handy and <em>idiomatic</em> pattern to use when:</p>
+<ul>
+<li>You want to use something like <a href="https://en.wikipedia.org/wiki/Function_overloading">overloading</a> (if you are coming from an Object Oriented Language)</li>
+<li>would like to have <code>default</code> values that can be overwritten when needed at creation</li>
+<li>Have a large number of possible inputs</li>
+<li>Want optional add-ons</li>
+<li>or anywhere you don't want a <code>new(..)</code> method that looks like a grocery list.</li>
+</ul>
+<span id="continue-reading"></span><h2 id="impl-builder-introduction">impl Builder --introduction</h2>
+<p>Before creating <a href="https://crates.io/crates/sql_docs">sql-docs</a> I was not very familiar with the build pattern, though I had been using it without really realizing what I was using for a while. It is very intuitive to use, as you chain together your <code>builder</code> methods. I'll include a simple example of where a <code>builder</code> could be helpful and <em>build</em> on it as we go (pun intended):</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">pub struct </span><span>Order </span><span style="color:#5fb3b3;">{
+</span><span>    dish</span><span style="color:#5fb3b3;">:</span><span> String
+</span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span style="color:#c594c5;">impl </span><span>Order </span><span style="color:#5fb3b3;">{
+</span><span>    </span><span style="color:#c594c5;">pub fn </span><span style="color:#6699cc;">new</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">dish</span><span style="color:#5fb3b3;">:</span><span> String</span><span style="color:#5fb3b3;">) -&gt; </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>            dish
+</span><span>        </span><span style="color:#5fb3b3;">}
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<h1 id="impl-order-first-iteration">impl Order --first-iteration</h1>
+<p>For the example scenario of this post, imagine we are making a backend for a point of sale machine that a restaurant can use to track table orders.</p>
+<p>Right now it's not the most descriptive structure but it is able to store orders. Maybe the struct <code>Order</code> can be modified to represent an order, which could have multiple dishes, drinks, and a few other things:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">pub struct </span><span>Order </span><span style="color:#5fb3b3;">{
+</span><span>    appetizer</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    main_course</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    drink</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    dessert</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    price</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">f64</span><span>,
+</span><span style="color:#5fb3b3;">}
+</span><span style="color:#c594c5;">impl </span><span>Order </span><span style="color:#5fb3b3;">{
+</span><span>    </span><span style="color:#c594c5;">pub fn </span><span style="color:#6699cc;">new</span><span style="color:#5fb3b3;">(
+</span><span>    </span><span style="color:#f99157;">appetizer</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    </span><span style="color:#f99157;">main_course</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    </span><span style="color:#f99157;">drink</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    </span><span style="color:#f99157;">dessert</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    </span><span style="color:#f99157;">price</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">f64</span><span>,
+</span><span>    </span><span style="color:#5fb3b3;">) -&gt; </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>            appetizer
+</span><span>            main_course
+</span><span>            drink
+</span><span>            dessert
+</span><span>            price
+</span><span>        </span><span style="color:#5fb3b3;">}
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>This is starting to get pretty big and there are still a lot of things an order could include, lets make a more exhaustive list and see just how unwieldy a naive approach to creating a <code>new()</code> order could be:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">pub struct </span><span>Order </span><span style="color:#5fb3b3;">{
+</span><span>    appetizer</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    appetizer_notes</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    main_course</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    main_course_notes</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    side_dish</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    side_dish_notes</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    drink</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    drink_size_ml</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">u64</span><span>,
+</span><span>    drink_notes</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    dessert</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    dessert_notes</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    table_number</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">u64</span><span>,
+</span><span>    guest_count</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">u64</span><span>,
+</span><span>    is_takeout</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">bool</span><span>,
+</span><span>    total_price</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">f64</span><span>,
+</span><span>    special_instructions</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span style="color:#c594c5;">impl </span><span>Order </span><span style="color:#5fb3b3;">{
+</span><span>    </span><span style="color:#c594c5;">pub fn </span><span style="color:#6699cc;">new</span><span style="color:#5fb3b3;">(
+</span><span>        </span><span style="color:#f99157;">appetizer</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>        </span><span style="color:#f99157;">appetizer_notes</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>        </span><span style="color:#f99157;">main_course</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>        </span><span style="color:#f99157;">main_course_notes</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>        </span><span style="color:#f99157;">side_dish</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>        </span><span style="color:#f99157;">side_dish_notes</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>        </span><span style="color:#f99157;">drink</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>        </span><span style="color:#f99157;">drink_size_ml</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">u64</span><span>,
+</span><span>        </span><span style="color:#f99157;">drink_notes</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>        </span><span style="color:#f99157;">dessert</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>        </span><span style="color:#f99157;">dessert_notes</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>        </span><span style="color:#f99157;">table_number</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">u64</span><span>,
+</span><span>        </span><span style="color:#f99157;">guest_count</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">u64</span><span>,
+</span><span>        </span><span style="color:#f99157;">is_takeout</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">bool</span><span>,
+</span><span>        </span><span style="color:#f99157;">total_price</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">f64</span><span>,
+</span><span>        </span><span style="color:#f99157;">special_instructions</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span>    </span><span style="color:#5fb3b3;">) -&gt; </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>            appetizer</span><span style="color:#5fb3b3;">,
+</span><span>            appetizer_notes</span><span style="color:#5fb3b3;">,
+</span><span>            main_course</span><span style="color:#5fb3b3;">,
+</span><span>            main_course_notes</span><span style="color:#5fb3b3;">,
+</span><span>            side_dish</span><span style="color:#5fb3b3;">,
+</span><span>            side_dish_notes</span><span style="color:#5fb3b3;">,
+</span><span>            drink</span><span style="color:#5fb3b3;">,
+</span><span>            drink_size_ml</span><span style="color:#5fb3b3;">,
+</span><span>            drink_notes</span><span style="color:#5fb3b3;">,
+</span><span>            dessert</span><span style="color:#5fb3b3;">,
+</span><span>            dessert_notes</span><span style="color:#5fb3b3;">,
+</span><span>            table_number</span><span style="color:#5fb3b3;">,
+</span><span>            guest_count</span><span style="color:#5fb3b3;">,
+</span><span>            is_takeout</span><span style="color:#5fb3b3;">,
+</span><span>            total_price</span><span style="color:#5fb3b3;">,
+</span><span>            special_instructions</span><span style="color:#5fb3b3;">,
+</span><span>        </span><span style="color:#5fb3b3;">}
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>Stay with me, I realize there are other optimizations we can do besides implementing a <code>builder</code> but I wanted to illustrate a point. If you aren't familiar, <a href="https://doc.rust-lang.org/stable/clippy/">clippy</a> has a lot of customization options and can make your code more or less idiomatic down to the minimum it will allow without modifying the <code>Cargo.toml</code>'s linting settings and simply running: <code>cargo check</code>. If we run:</p>
+<pre data-lang="bash" style="background-color:#2b2c2f;color:#cccece;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#6699cc;">cargo clippy</span><span style="color:#5fb3b3;"> --</span><span style="color:#6699cc;"> -D clippy::too_many_arguments
+</span></code></pre>
+<p>We can get a warning about this:</p>
+<pre data-lang="text" style="background-color:#2b2c2f;color:#cccece;" class="language-text "><code class="language-text" data-lang="text"><span>error: this function has too many arguments (16/7)
+</span><span>  --&gt; src/main.rs:44:5
+</span><span>   |
+</span><span>44 | /     pub fn new(
+</span><span>45 | |         appetizer: String,
+</span><span>46 | |         appetizer_notes: String,
+</span><span>47 | |         main_course: String,
+</span><span>...  |
+</span><span>60 | |         special_instructions: String,
+</span><span>61 | |     ) -&gt; Self {
+</span><span>   | |_____________^
+</span><span>   |
+</span><span>   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#too_many_arguments
+</span><span>   = note: requested on the command line with `-D clippy::too-many-arguments`
+</span></code></pre>
+<p>So the default level appears to be 7 arguments max and we have 16! But obviously we have a mess of fields that seem like they could all be abstracted a bit more feasibly. Lets refactor our struct <code>Order</code> one more time before implementing a <code>builder</code>:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">pub struct </span><span>Item </span><span style="color:#5fb3b3;">{
+</span><span>    name</span><span style="color:#5fb3b3;">:</span><span> MenuItem,
+</span><span>    price</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">i64</span><span>, </span><span style="color:#5f6364;">// convert prices to smallest denomination to avoid float messes
+</span><span>    notes</span><span style="color:#5fb3b3;">: </span><span style="color:#fac863;">Option</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#fac863;">String</span><span style="color:#5fb3b3;">&gt;</span><span>,
+</span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span style="color:#c594c5;">pub struct </span><span>Order </span><span style="color:#5fb3b3;">{
+</span><span>    items</span><span style="color:#5fb3b3;">: </span><span style="color:#fac863;">Vec</span><span style="color:#5fb3b3;">&lt;</span><span>Item</span><span style="color:#5fb3b3;">&gt;</span><span>,
+</span><span>    table</span><span style="color:#5fb3b3;">: </span><span style="color:#fac863;">Option</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#c594c5;">u8</span><span style="color:#5fb3b3;">&gt;</span><span>,
+</span><span>    table_instructions</span><span style="color:#5fb3b3;">: </span><span style="color:#fac863;">Option</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#fac863;">String</span><span style="color:#5fb3b3;">&gt;</span><span>,
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>That is much clearer and helps conceptualize how an order works. I am omitting anything for the <code>MenuItem</code> just imagine it holds the value for the menu item (name, ingredients, etc). I'm leaving price on <code>Item</code> because we're placing an order and using an i64 to avoid decimals (€130.30 becomes <code>13030</code>). We can abstract away a lot by simply using an <code>Option&lt;&gt;</code>, such as now making table and order item notes optional, as well as making take-out implicit to the <code>table: Option&lt;u8&gt;</code> field (no table for take away!). Now we can start to discuss what functionality we might want to implement with our <code>builder</code> pattern!</p>
+<h1 id="impl-builder-plan">impl Builder --plan</h1>
+<p>Now that we have a nice clean abstraction to work with, lets think about the process a server might go through to put an order into the system:</p>
+<ol>
+<li>Select item from menu list, lets say <em>Steak</em></li>
+<li>Open the individual item view</li>
+<li>In the item view the server is prompted to:
+<ul>
+<li>select price (maybe a 10% because steak is on special)</li>
+<li>add a note to order: "Medium-rare, light butter"</li>
+</ul>
+</li>
+<li>Return to the menu list, to select a drink: <em>Bourbon</em></li>
+<li>In the bourbon view set the notes to "on ice"</li>
+<li>Enter the order into the system for the kitchen to see (build the order)</li>
+</ol>
+<p>This is probably a bit simple and I would rather have a separate way to represent how to cook a steak/dish with multiple cooking choices, but for the purposes of this post this should suffice!</p>
+<h2 id="impl-builder-step-1">impl Builder --step-1</h2>
+<p>So then how do we add this functionality? We could do something like:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">impl </span><span>Order </span><span style="color:#5fb3b3;">{
+</span><span>    </span><span style="color:#6699cc;">new</span><span style="color:#5fb3b3;">(</span><span>items</span><span style="color:#5fb3b3;">: </span><span style="color:#fac863;">Vec</span><span style="color:#5fb3b3;">&lt;</span><span>Item</span><span style="color:#5fb3b3;">&gt;,</span><span> table</span><span style="color:#5fb3b3;">: </span><span style="color:#fac863;">Option</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#c594c5;">u8</span><span style="color:#5fb3b3;">&gt;,</span><span> instructions</span><span style="color:#5fb3b3;">: </span><span style="color:#fac863;">Option</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#fac863;">String</span><span style="color:#5fb3b3;">&gt;) -&gt; </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>            items</span><span style="color:#5fb3b3;">,
+</span><span>            table</span><span style="color:#5fb3b3;">,
+</span><span>            instructions</span><span style="color:#5fb3b3;">,
+</span><span>        </span><span style="color:#5fb3b3;">}
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span style="color:#c594c5;">let</span><span> order </span><span style="color:#5fb3b3;">= </span><span>Order</span><span style="color:#5fb3b3;">::</span><span>new</span><span style="color:#5fb3b3;">(
+</span><span>    vec!</span><span style="color:#5fb3b3;">[
+</span><span>        Item </span><span style="color:#5fb3b3;">{
+</span><span>            name</span><span style="color:#5fb3b3;">: </span><span>MenuItem</span><span style="color:#5fb3b3;">::</span><span>Steak</span><span style="color:#5fb3b3;">,
+</span><span>            item_type</span><span style="color:#5fb3b3;">: </span><span>ItemType</span><span style="color:#5fb3b3;">::</span><span>Entree</span><span style="color:#5fb3b3;">,
+</span><span>            price</span><span style="color:#5fb3b3;">: </span><span style="color:#f99157;">270</span><span style="color:#5fb3b3;">, 
+</span><span>            notes</span><span style="color:#5fb3b3;">: </span><span style="color:#fac863;">Some</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">medium rare, light butter</span><span style="color:#5fb3b3;">&quot;.</span><span style="color:#6699cc;">to_string</span><span style="color:#5fb3b3;">()),
+</span><span>        </span><span style="color:#5fb3b3;">},
+</span><span>        Item </span><span style="color:#5fb3b3;">{
+</span><span>            name</span><span style="color:#5fb3b3;">: </span><span>MenuItem</span><span style="color:#5fb3b3;">::</span><span>Bourbon</span><span style="color:#5fb3b3;">,
+</span><span>            item_type</span><span style="color:#5fb3b3;">: </span><span>ItemType</span><span style="color:#5fb3b3;">::</span><span>Drink</span><span style="color:#5fb3b3;">,
+</span><span>            price</span><span style="color:#5fb3b3;">: </span><span style="color:#f99157;">120</span><span style="color:#5fb3b3;">,
+</span><span>            notes</span><span style="color:#5fb3b3;">: </span><span style="color:#fac863;">Some</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">on ice</span><span style="color:#5fb3b3;">&quot;.</span><span style="color:#6699cc;">to_string</span><span style="color:#5fb3b3;">()),
+</span><span>        </span><span style="color:#5fb3b3;">},
+</span><span>    </span><span style="color:#5fb3b3;">],
+</span><span>    </span><span style="color:#fac863;">Some</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">12</span><span style="color:#5fb3b3;">), 
+</span><span>    </span><span style="color:#fac863;">None</span><span style="color:#5fb3b3;">,     
+</span><span style="color:#5fb3b3;">);
+</span><span>
+</span></code></pre>
+<p>But it would become increasingly messy to write this out as our system gets fleshed out and functionality gets added in. We can take advantage of a <code>builder</code> to fill out the order piece by piece. Let's start by introducing a new <code>builder</code> structure:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#5fb3b3;">#[</span><span>derive</span><span style="color:#5fb3b3;">(</span><span>Debug</span><span style="color:#5fb3b3;">)]
+</span><span style="color:#c594c5;">pub struct </span><span>OrderBuilder </span><span style="color:#5fb3b3;">{
+</span><span>    order</span><span style="color:#5fb3b3;">:</span><span> Order
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>For this example, the <code>builder</code> simply wraps <code>Order</code> directly. In a real system you might use a separate internal representation, but this keeps the example focused on the pattern.</p>
+<p><strong>That's it? That's our builder?</strong></p>
+<p>A <code>builder</code> can be pretty much any shape you need to get the job done. In our case we don't need anything too fancy. We are basically going to wrap our <code>Order</code> struct in our <code>builder</code> and go from there.</p>
+<h2 id="impl-builder-step-2-update-order">impl Builder --step-2 update-order</h2>
+<p>Our next order of business is to update the <code>Order</code> so that when you call an order it returns our <code>OrderBuilder</code>:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">impl </span><span>Order </span><span style="color:#5fb3b3;">{
+</span><span>    </span><span style="color:#c594c5;">pub fn </span><span style="color:#6699cc;">builder</span><span style="color:#5fb3b3;">() -&gt;</span><span> OrderBuilder </span><span style="color:#5fb3b3;">{
+</span><span>        OrderBuilder</span><span style="color:#5fb3b3;">::</span><span>new</span><span style="color:#5fb3b3;">()
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>We can keep this nice and simple for the example but imagine you started adding lots of new methods on <code>Order</code> that were intended to work on a completed and immutable <code>Order</code> and not used to update values as a <code>builder</code> does. Then the separation of concerns really starts to make sense, as we'll see. Exposing <code>builder()</code> on <code>Order</code> makes discovery trivial and keeps construction colocated with the type it produces.</p>
+<h2 id="impl-builder-step-3-defaults">impl Builder --step-3 defaults</h2>
+<p>You may have noticed above calling the <code>builder</code> is done through the use of a <code>new()</code> method that takes 0 parameters. We are doing that to give us a skeleton of an empty <code>OrderBuilder</code>, and then we can update the skeleton as needed. We can start this process by adding an implementation for <code>Default</code>, so we have our skeleton:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">impl </span><span>Default </span><span style="color:#c594c5;">for </span><span>OrderBuilder </span><span style="color:#5fb3b3;">{
+</span><span>    </span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">default</span><span style="color:#5fb3b3;">() -&gt; </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>            order</span><span style="color:#5fb3b3;">:</span><span> Order </span><span style="color:#5fb3b3;">{
+</span><span>                items</span><span style="color:#5fb3b3;">: </span><span style="color:#fac863;">Vec</span><span style="color:#5fb3b3;">::</span><span>new</span><span style="color:#5fb3b3;">(),
+</span><span>                table</span><span style="color:#5fb3b3;">: </span><span style="color:#fac863;">None</span><span style="color:#5fb3b3;">,
+</span><span>                table_instructions</span><span style="color:#5fb3b3;">: </span><span style="color:#fac863;">None</span><span style="color:#5fb3b3;">,
+</span><span>            </span><span style="color:#5fb3b3;">},
+</span><span>        </span><span style="color:#5fb3b3;">}
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span style="color:#c594c5;">impl </span><span>OrderBuilder </span><span style="color:#5fb3b3;">{
+</span><span>    </span><span style="color:#c594c5;">pub fn </span><span style="color:#6699cc;">new</span><span style="color:#5fb3b3;">() -&gt; </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>default</span><span style="color:#5fb3b3;">()
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>Nothing too exciting but we can now easily get a default <code>builder</code> for use later.</p>
+<h2 id="impl-builder-step-4-chained-methods">impl Builder --step-4 chained methods</h2>
+<p>Chaining methods in the <code>builder</code> is really where its utility becomes apparent. This pattern allows us to have an immutable final <code>Order</code> while adding in whatever we want to that structure beforehand, and with idiomatic method naming it should be very clear what we are doing as we do it.</p>
+<p>Let's start with a finished <code>Order</code> creation statement and then breakdown the methods we will need to accomplish it:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">let</span><span> item_1 </span><span style="color:#5fb3b3;">= </span><span>Item</span><span style="color:#5fb3b3;">::</span><span>new</span><span style="color:#5fb3b3;">(</span><span>Steak</span><span style="color:#5fb3b3;">, </span><span style="color:#f99157;">300</span><span style="color:#5fb3b3;">, </span><span style="color:#fac863;">Some</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">Medium rare, light butter</span><span style="color:#5fb3b3;">&quot;.</span><span style="color:#6699cc;">to_owned</span><span style="color:#5fb3b3;">()));
+</span><span style="color:#c594c5;">let</span><span> item_2 </span><span style="color:#5fb3b3;">= </span><span>Item</span><span style="color:#5fb3b3;">::</span><span>new</span><span style="color:#5fb3b3;">(</span><span>Bourbon</span><span style="color:#5fb3b3;">, </span><span style="color:#f99157;">150</span><span style="color:#5fb3b3;">, </span><span style="color:#fac863;">Some</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">on ice</span><span style="color:#5fb3b3;">&quot;.</span><span style="color:#6699cc;">to_owned</span><span style="color:#5fb3b3;">()));
+</span><span style="color:#c594c5;">let</span><span> new_order </span><span style="color:#5fb3b3;">= </span><span>Order</span><span style="color:#5fb3b3;">::</span><span>builder</span><span style="color:#5fb3b3;">()
+</span><span>    </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">table</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">13</span><span style="color:#5fb3b3;">)
+</span><span>    </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">add_item</span><span style="color:#5fb3b3;">(</span><span>item_1</span><span style="color:#5fb3b3;">)
+</span><span>    </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">add_item</span><span style="color:#5fb3b3;">(</span><span>item_2</span><span style="color:#5fb3b3;">)
+</span><span>    </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">table_instructions</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">Bring bourbon before Steak</span><span style="color:#5fb3b3;">&quot;)
+</span><span>    </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">build</span><span style="color:#5fb3b3;">();
+</span></code></pre>
+<p>Here we can see that we first create our items, then to build our order, we chain as many methods as we need to in order to fill out our skeleton of an <code>Order</code>. We can do the same thing without chaining if we make <code>new_order</code> mutable:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">let mut</span><span> new_order </span><span style="color:#5fb3b3;">= </span><span>Order</span><span style="color:#5fb3b3;">::</span><span>builder</span><span style="color:#5fb3b3;">()
+</span><span>    </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">table</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">13</span><span style="color:#5fb3b3;">);
+</span><span>new_order
+</span><span>    </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">add_item</span><span style="color:#5fb3b3;">(</span><span>item_1</span><span style="color:#5fb3b3;">)
+</span><span>    </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">add_item</span><span style="color:#5fb3b3;">(</span><span>item_2</span><span style="color:#5fb3b3;">);
+</span><span>new_order</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">table_instructions</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">Bring bourbon before Steak</span><span style="color:#5fb3b3;">&quot;)
+</span><span>order </span><span style="color:#5fb3b3;">=</span><span> new_order</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">build</span><span style="color:#5fb3b3;">();
+</span></code></pre>
+<p>No matter what we end our build with the <code>build()</code> method! Nice and clean. Notice we did a reassignment this time after making <code>new_order</code> mutable, this is to retain ownership of the built <code>Order</code> and regain immutability.</p>
+<p>To accomplish the above here is our finished <code>OrderBuilder</code>:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">impl </span><span>OrderBuilder </span><span style="color:#5fb3b3;">{
+</span><span>    </span><span style="color:#c594c5;">pub fn </span><span style="color:#6699cc;">new</span><span style="color:#5fb3b3;">() -&gt; </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>default</span><span style="color:#5fb3b3;">()
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span>    </span><span style="color:#c594c5;">pub fn </span><span style="color:#6699cc;">table</span><span style="color:#5fb3b3;">(</span><span style="color:#c594c5;">mut </span><span style="color:#f99157;">self</span><span>, </span><span style="color:#f99157;">table</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">u8</span><span style="color:#5fb3b3;">) -&gt; </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#ec5f67;">self</span><span style="color:#5fb3b3;">.</span><span>order</span><span style="color:#5fb3b3;">.</span><span>table </span><span style="color:#5fb3b3;">= </span><span style="color:#fac863;">Some</span><span style="color:#5fb3b3;">(</span><span>table</span><span style="color:#5fb3b3;">);
+</span><span>        </span><span style="color:#ec5f67;">self
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span>    </span><span style="color:#c594c5;">pub fn </span><span style="color:#6699cc;">table_instructions</span><span style="color:#5fb3b3;">&lt;</span><span>S</span><span style="color:#5fb3b3;">: </span><span style="color:#fac863;">Into</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#fac863;">String</span><span style="color:#5fb3b3;">&gt;&gt;(</span><span style="color:#c594c5;">mut </span><span style="color:#f99157;">self</span><span>, </span><span style="color:#f99157;">instructions</span><span style="color:#5fb3b3;">:</span><span> S</span><span style="color:#5fb3b3;">) -&gt; </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#ec5f67;">self</span><span style="color:#5fb3b3;">.</span><span>order</span><span style="color:#5fb3b3;">.</span><span>table_instructions </span><span style="color:#5fb3b3;">= </span><span style="color:#fac863;">Some</span><span style="color:#5fb3b3;">(</span><span>instructions</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">into</span><span style="color:#5fb3b3;">());
+</span><span>        </span><span style="color:#ec5f67;">self
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span>    </span><span style="color:#c594c5;">pub fn </span><span style="color:#6699cc;">add_item</span><span style="color:#5fb3b3;">(</span><span style="color:#c594c5;">mut </span><span style="color:#f99157;">self</span><span>, </span><span style="color:#f99157;">item</span><span style="color:#5fb3b3;">:</span><span> Item</span><span style="color:#5fb3b3;">) -&gt; </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#ec5f67;">self</span><span style="color:#5fb3b3;">.</span><span>order</span><span style="color:#5fb3b3;">.</span><span>items</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">push</span><span style="color:#5fb3b3;">(</span><span>item</span><span style="color:#5fb3b3;">);
+</span><span>        </span><span style="color:#ec5f67;">self
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span>    </span><span style="color:#c594c5;">pub fn </span><span style="color:#6699cc;">build</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">self</span><span style="color:#5fb3b3;">) -&gt;</span><span> Order </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#ec5f67;">self</span><span style="color:#5fb3b3;">.</span><span>order
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<h1 id="struct-conclusion">struct Conclusion</h1>
+<p>This was a fun and simplified example I thought of to illustrate a design pattern that I have found to be very helpful when using Rust. I took inspiration from the <a href="https://rust-unofficial.github.io/patterns/patterns/creational/builder.html">Rust Design Patterns</a> section on Builders, along with a possibly outdated Rust <a href="https://doc.rust-lang.org/1.12.0/style/ownership/builders.html">style guide</a>. In both cases I thought the <code>builder</code> pattern was a little under built (again pun intended, no apologies!) and wanted to give my own spin on a simple example to illustrate the concept. I hope you found it informative or even helpful. If this were a <code>builder</code> I would want to use in the real world I would probably make the structure for the <code>OrderBuilder</code> a bit more unique, rather than simply wrapping an <code>Order</code>, but for this post I think it serves the illustrative goal of how to use a <code>builder</code>. Builders allow for separating concerns between creating an object and using an object, allowing for a cleaner separation between those two steps. We could have just as easily put everything into the <code>Order</code> struct and just avoided any naming clashes such as renaming <code>table</code> to <code>set_table</code> and so on. But doing things this way helps communicate our intent for future us and others that may one day find themselves using our code.</p>
+
+  </div><div class="giscus comments"></div>
+<script src="https://giscus.app/client.js"
+        data-repo="rpg-alex&#x2F;hemomorphic"
+        data-repo-id="R_kgDOQVq14Q"
+        data-category="Blog comments"
+        data-category-id="DIC_kwDOQVq14c4CzJUG"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="transparent_dark"
+        data-lang="en"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</article>
+
+    </main>
+  </div>
+  <footer><a href="mailto:mralexblood@outlook.com"><i class="svg-icon icon-mail"></i></a><a href="https://github.com/rpg-alex"><i class="svg-icon icon-github-circled"></i></a><a href="https://buymeacoffee.com/rpg.alex"><img
+    class="svg-icon"
+    src="https://hemomorphic.alexblood.net/images/bmc-brand-icon.svg"
+    alt="☕"
+    
+  ></a>
+<span class="copyright">&copy; 2025 - 2026 Alex Blood</span>
+</footer>
+  <script src="https://hemomorphic.alexblood.net/js/copy-code.js" defer></script>
+</body>
+
+</html>
