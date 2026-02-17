@@ -79,6 +79,7 @@ simplified_tags = false
 social_links = [
   { platform = "email", user_id = "mralexblood@outlook.com" },
   { platform = "github", user_id = "rpg-alex" },
+  {platform ="buymeacoffee", user_id = "rpg.alex"}
 ]
 
 # GitHub settings that are used to generate the edit page link
@@ -107,5 +108,5 @@ crossorigin = "anonymous"
 # JSON-LD metadata
 [extra.bio]
 links = [
-  "https://github.com/rpg-alex",
+  "https://github.com/rpg-alex"
 ]

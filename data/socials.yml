@@ -45,3 +45,7 @@
 - platform: telegram
   url: https://t.me/
   icon: telegram
+
+- platform: buymeacoffee
+  url: https://buymeacoffee.com/
+  icon: linkedin
