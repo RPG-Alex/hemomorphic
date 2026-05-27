@@ -8,8 +8,9 @@ tags = ["rust","blogging","error-handling","idiomatic"]
 
 # `std::error` 
 Errors in Rust are unique in that they can be handled in so many ways. This can be confusing and seem tedious at first, but there are advantages to being able to choose to `panic!` when an `error` is reached, or extending your own errors in  such a way as to add context-specific information. [Or you can choose to simply `unwrap()` when an error is reached](https://blog.cloudflare.com/18-november-2025-outage/#memory-preallocation).  I am personally fond of creating errors using a custom `enum` and adding them as they are needed. Hence the title, *laissez-faire* errors. 
-
+<!-- more -->
 Errors in Rust are handled with the `Result` `enum`, and specifically as `Result<T,E>`, where `T` is a generic for the expected return type, an `i32` for example, and `E` is an error type, such as `std::io::Error` for example.
+
 ## errors --help
 There are three main ways to handle a `Result<T,E>`:
 1) **Ignore it**: use an `unwrap()` - which is the quick and dirty way of handling errors, or rather not handling them and assuming there never will be, or if there are errors, that a `panic!` is what you want to see. This is the least idiomatic method for production Rust.
