@@ -107,7 +107,7 @@ We should go a step further and implement the `std::error::Error` for our error:
 impl std::error::Error for LaissezError {}
 ```
 #### Propagating with `?` 
-More often than not the context of where the error is first being returned isn't the ideal location to handle errors. Ideally errors are being handled explicitly, such as above with a `match` statement, in as few places as possible. Thus it becomes necessary to *propagate*, or pass the error up, the layers of your application to where it will be processed and used. Luckily doing is very straightforward:
+More often than not the context of where the error is first being returned isn't the ideal location to handle errors. Ideally errors are being handled explicitly, such as above with a `match` statement, in as few places as possible. Thus it becomes necessary to *propagate*, or pass the error up, the layers of your application to where it will be processed and used. Luckily doing this is very straightforward:
 ```rust
 fn main() -> Result<(),LaissezError> {
 	let value = divisible_by_two(3)?;
