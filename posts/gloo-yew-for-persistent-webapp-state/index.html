@@ -1,0 +1,329 @@
+<!DOCTYPE html><html lang="en-US" xml:lang="en-US">
+  
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="shortcut icon" type="image/png" sizes="32x32" href="https://hemomorphic.alexblood.net/favicon-32x32.png">
+<link rel="alternate" type="application/atom+xml" title="Atom feed" href="https://hemomorphic.alexblood.net/atom.xml">
+<link rel="stylesheet" href="https://hemomorphic.alexblood.net/main.css">
+<meta name="theme-color" content="#151515">
+<meta name="msapplication-navbutton-color" content="#151515">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=example-tracking-id"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'example-tracking-id');
+</script>
+
+<meta name="robots" content="index, follow">
+<meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+<title>Gloo + Yew for persistent webapp state | Hemo-Morphic</title>
+<meta name="generator" content="Zola">
+<meta name="description" content="I have been tinkering with a side project for a while where the goals are pretty simple:the application&#x27;s state needs to be preserved between sessionsit needs to be client side onlyRust
+I originally w…">
+<meta name="author" content="Alex Blood">
+<link rel="canonical" href="https://hemomorphic.alexblood.net/posts/gloo-yew-for-persistent-webapp-state/">
+  <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://hemomorphic.alexblood.net/images/logo.png">
+  <meta name="twitter:title" content="Gloo + Yew for persistent webapp state">
+  <meta name="twitter:description" content="I have been tinkering with a side project for a while where the goals are pretty simple:the application&#x27;s state needs to be preserved between sessionsit needs to be client side onlyRust
+I originally w…">
+  
+  <meta property="og:title" content="Gloo + Yew for persistent webapp state">
+  <meta property="og:description" content="I have been tinkering with a side project for a while where the goals are pretty simple:the application&#x27;s state needs to be preserved between sessionsit needs to be client side onlyRust
+I originally w…">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://hemomorphic.alexblood.net/posts/gloo-yew-for-persistent-webapp-state/">
+    <meta property="og:image" content="https://hemomorphic.alexblood.net/images/logo.png">
+
+  <meta property="og:site_name" content="Gloo + Yew for persistent webapp state">
+  <meta property="og:locale" content="en_US">
+    <meta property="article:published_time" content="2026-09-09T00:00:00+00:00">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://hemomorphic.alexblood.net/posts/gloo-yew-for-persistent-webapp-state"
+      },
+      "headline": "Gloo + Yew for persistent webapp state",
+      "description": "I have been tinkering with a side project for a while where the goals are pretty simple:the application&#x27;s state needs to be preserved between sessionsit needs to be client side onlyRust
+I originally w…",
+      "wordcount": "1692",
+      "datePublished": "2026-09-09T00:00:00+00:00",
+      "dateModified": "2026-09-09T00:00:00+00:00",
+      "author": {
+        "@type": "Person",
+        "name": "Alex Blood"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Gloo + Yew for persistent webapp state",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://hemomorphic.alexblood.net/images/logo.png"
+        }
+      }
+    }
+    </script>
+
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <a id="a-title" href="https://hemomorphic.alexblood.net">
+        <h1>Hemo-Morphic</h1>
+      </a>
+      <h2>Static dispatch in my bloodstream</h2>
+      <nav id="navbar">
+  <a href="https://hemomorphic.alexblood.net/about" class="btn">About</a>
+  <a href="https://hemomorphic.alexblood.net/tags" class="btn">Tags</a>
+  <a href="https://github.com/rpg-alex" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+  <a href="https://buymeacoffee.com/rpg.alex" class="btn">☕ Support me</a>
+</nav>
+</div>
+  </header>
+
+  <div class="container">
+    <main>
+<article class="page">
+  <div class="header-container">
+    <h2>Gloo + Yew for persistent webapp state</h2>
+    <div class="improve hide-on-mobiles">
+      
+<a href="https://github.com/rpg-alex/hemomorphic/edit/main/content/posts/gloo+yew-for-persistent-webapp-state.md" title="Help improve page https://hemomorphic.alexblood.net/posts/gloo-yew-for-persistent-webapp-state/">Improve this page</a>
+
+    </div>
+  </div>
+  <div class="page-info">
+    <span>Tags = [
+      <a href="https://hemomorphic.alexblood.net/tags/rust/" class="page-tag">rust</a>,
+      <a href="https://hemomorphic.alexblood.net/tags/yew/" class="page-tag">yew</a>,
+      <a href="https://hemomorphic.alexblood.net/tags/webassembly/" class="page-tag">webassembly</a>,
+      <a href="https://hemomorphic.alexblood.net/tags/gloo/" class="page-tag">gloo</a>,
+      <a href="https://hemomorphic.alexblood.net/tags/web-development/" class="page-tag">web-development</a> ]
+    </span>
+    <time class="page-time smaller" datetime="2026-09-09T00:00:00+00:00">
+      Posted on September  9, 2026 at 00:00 UTC
+    </time>
+  </div>
+  <div class="entry">
+    <p>I have been tinkering with a side project for a while where the goals are pretty simple:</p>
+<ol>
+<li>the application's state needs to be preserved between sessions</li>
+<li>it needs to be client side only</li>
+<li>Rust
+I originally went with <a href="https://leptos.dev/">Leptos</a> for building the web app that I wanted, and while I was getting along with working with Leptos' props and contexts, I slowly realized I didn't want to pass props around between views. As the complexity of the application grew it was getting to be more of a headache to pass around the data I wanted to work with. But I continued developing and tinkering.</li>
+</ol>
+<span id="continue-reading"></span>
+<p>Eventually I came to the conclusion that I would need to use the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API">Web Storage API</a> for either <code>sessionStorage</code> or <code>localStorage</code>. Likely <code>localStorage</code>. Why? Because I was building something where the user could update / interact with some of the application and it would be preferable if those changes were available between uses, on the same browser. This is a small hobby project and I have had no interest in setting up any server side storage at all, so doing everything client side and using the correct web storage api made sense to me.</p>
+<p>Looking around, at the documentation, it was abundantly clear that <code>localStorage</code> was exactly what I wanted:</p>
+<blockquote>
+<p><code>localStorage</code> is partitioned by <a href="https://developer.mozilla.org/en-US/docs/Glossary/Origin">origin</a> only. All documents with the same origin have access to the same <code>localStorage</code> area, and it persists even when the browser is closed and reopened.</p>
+</blockquote>
+<p>Awesome! So now I just needed to implement the logic in Leptos and get going. But here I ran into a problem, Leptos' documentation makes reference to using <code>localStorage</code> but I wasn't really understanding the explanation of use and kept getting lost looking for an example of what I was looking for. Eventually I stumbled across <a href="https://gloo-rs.web.app/">gloo</a>, and specifically their <code>storage</code> crate.</p>
+<h2 id="gloo-storage-doc"><a href="https://crates.io/crates/gloo-storage">gloo_storage</a> --doc</h2>
+<p>Looking at the <a href="https://docs.rs/gloo-storage/latest/gloo_storage/">docs</a> for gloo_storage I was quickly underwhelmed again as it only lists a single sentence introduction, no examples, and just the structs and traits available. Ok then. But reading the description I realized I was making things more complicated than they needed to be:</p>
+<blockquote>
+<p>This crate provides wrappers for the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API">Web Storage API</a></p>
+</blockquote>
+<p>So all I needed to do was consult the web storage api and go from there! Great!</p>
+<p>Next problem... I was done with Leptos.</p>
+<h2 id="remove-leptos-add-yew">--remove leptos --add yew</h2>
+<p>It had been a while since I checked out <a href="https://yew.rs/">yew</a> and after looking around to see if I could avoid complexity via props, I came across this great <a href="https://yew.rs/docs/next/concepts/contexts">concepts page</a> on the yew website. Not only did their example of the problem exactly sum up my naive implementation where I wound up prop drilling again and again, but the tool that yew now supports called <em>Context</em> seemed exactly like what I wanted to do (I should note I don't know what Leptos has that could be comparable or better than yew's context but I made the switch all the same).</p>
+<p>So now I had my tech stack, maybe? gloo_storage for my persistence, and yew for my web application architecture. Awesome. Now I needed to test things out.</p>
+<h2 id="cargo-run-example">cargo run -- --example</h2>
+<p>Now that i have given the back story to how I came to wanting to try yew + gloo, lets make a simple example that illustrates what I want from the persistent storage. Lets start by defining how the example should operate:
+take user input -&gt; store input persistently -&gt; update application state</p>
+<p>Seems pretty straight forward. First we should make sure we have trunk installed:</p>
+<pre data-lang="bash" style="background-color:#2b2c2f;color:#cccece;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#6699cc;">cargo install trunk
+</span></code></pre>
+<p>Then we can make our new project:</p>
+<pre data-lang="bash" style="background-color:#2b2c2f;color:#cccece;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#6699cc;">cargo new gloo-yew
+</span><span style="color:#6699cc;">cd gloo-yew
+</span></code></pre>
+<p>then we should get our imports:</p>
+<pre data-lang="bash" style="background-color:#2b2c2f;color:#cccece;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#6699cc;">cargo add yew</span><span style="color:#5fb3b3;"> --</span><span style="color:#f99157;">features</span><span style="color:#6699cc;"> csr
+</span><span style="color:#6699cc;">cargo add gloo-storage
+</span><span style="color:#6699cc;">cargo add serde
+</span></code></pre>
+<p>What are the features we chose? <code>csr</code> is for <em>client side rendering</em>, remember we want everything to happen on the client side, so nothing will be rendered from the server. We will need to use the <a href="https://crates.io/crates/serde">Serde</a> crate for serialization. But why do we need serde for this project if we aren't going to need to send anything to the server?</p>
+<h3 id="serde-the-powerhouse-of-the-cell">Serde - the powerhouse of the cell</h3>
+<p>While you may have primarily seen serde being used to serialize and deserialize data for doing something like sending it to/from a server as json, its still very handy elsewhere where you want to serialize / serialize your Rust structs. And guess how we are going to store our application's state? Structs!</p>
+<p>What we'll plan to do is convert our data structure to json then use the <code>localStorage</code> api to store the json locally, then we can read from the storage to update our application during use.</p>
+<p>We'll need a struct. So lets just decide what the example should hold, I think a text box that the user can input their name, the current name output next to the text box, should be sufficient to test that gloo + yew are working correctly!</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">struct </span><span>UserInfo </span><span style="color:#5fb3b3;">{
+</span><span>	name</span><span style="color:#5fb3b3;">:</span><span> String
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>We  can call it <code>UserInfo</code> since we might want to extend it later on to add more user information and test the storage/update pipeline is working properly.</p>
+<p>We should probably add <code>serde</code> too:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#5fb3b3;">#[</span><span>derive</span><span style="color:#5fb3b3;">(</span><span>Serialize</span><span style="color:#5fb3b3;">,</span><span> Deserialize</span><span style="color:#5fb3b3;">,</span><span> Clone</span><span style="color:#5fb3b3;">,</span><span> Default</span><span style="color:#5fb3b3;">,</span><span> PartialEq</span><span style="color:#5fb3b3;">)]
+</span><span style="color:#c594c5;">struct </span><span>UserInfo
+</span></code></pre>
+<p>I am adding <code>Clone</code>, <code>PartialEq</code>, and <code>Default</code> as well because we will need these derives to work with our state. We are going to have to clone, and start with the default value for our field, which should just be <code>String::new()</code>, for an initial state before receiving any user input.</p>
+<p>One more thing before we build this, lets add support for <code>web-sys</code> so we can work with the html <code>input</code> tag and get our user input!</p>
+<pre data-lang="bash" style="background-color:#2b2c2f;color:#cccece;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#6699cc;">cargo add web-sys
+</span></code></pre>
+<p><a href="https://crates.io/crates/web-sys">web-sys</a> is a binding for Web APIs, and yew <a href="https://yew.rs/docs/next/concepts/basic-web-technologies/web-sys">recommends it</a>.</p>
+<p>Now let's get our application skeleton done!</p>
+<h3 id="trunk-serve-open-example">trunk serve --open example</h3>
+<p>We'll keep the application as simple as possible and <code>main.rs</code> can just look something like this:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">use </span><span>gloo_storage</span><span style="color:#5fb3b3;">::{</span><span>LocalStorage</span><span style="color:#5fb3b3;">,</span><span> Storage</span><span style="color:#5fb3b3;">};
+</span><span style="color:#c594c5;">use </span><span>serde</span><span style="color:#5fb3b3;">::{</span><span>Deserialize</span><span style="color:#5fb3b3;">,</span><span> Serialize</span><span style="color:#5fb3b3;">};
+</span><span style="color:#c594c5;">use </span><span>web_sys</span><span style="color:#5fb3b3;">::</span><span>HtmlInputElement</span><span style="color:#5fb3b3;">;
+</span><span style="color:#c594c5;">use </span><span>yew</span><span style="color:#5fb3b3;">::</span><span>prelude</span><span style="color:#5fb3b3;">::*;
+</span><span>
+</span><span style="color:#c594c5;">const </span><span>STORAGE_KEY</span><span style="color:#5fb3b3;">: &amp;</span><span style="color:#c594c5;">str </span><span style="color:#5fb3b3;">= &quot;</span><span style="color:#99c794;">user-info</span><span style="color:#5fb3b3;">&quot;;
+</span><span>
+</span><span style="color:#c594c5;">type </span><span>UserInfoContext </span><span style="color:#5fb3b3;">= </span><span>UseStateHandle</span><span style="color:#5fb3b3;">&lt;</span><span>UserInfo</span><span style="color:#5fb3b3;">&gt;;
+</span><span>
+</span><span style="color:#5fb3b3;">#[</span><span>derive</span><span style="color:#5fb3b3;">(</span><span>Serialize</span><span style="color:#5fb3b3;">,</span><span> Deserialize</span><span style="color:#5fb3b3;">,</span><span> Clone</span><span style="color:#5fb3b3;">,</span><span> Default</span><span style="color:#5fb3b3;">,</span><span> PartialEq</span><span style="color:#5fb3b3;">)]
+</span><span style="color:#c594c5;">struct </span><span>UserInfo </span><span style="color:#5fb3b3;">{
+</span><span>    name</span><span style="color:#5fb3b3;">:</span><span> String,
+</span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span style="color:#5fb3b3;">#[</span><span>component</span><span style="color:#5fb3b3;">]
+</span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">App</span><span style="color:#5fb3b3;">() -&gt;</span><span> Html </span><span style="color:#5fb3b3;">{
+</span><span>    </span><span style="color:#c594c5;">let</span><span> state </span><span style="color:#5fb3b3;">= </span><span style="color:#6699cc;">use_state_eq</span><span style="color:#5fb3b3;">(|| {
+</span><span>        LocalStorage</span><span style="color:#5fb3b3;">::</span><span>get</span><span style="color:#5fb3b3;">::&lt;</span><span>UserInfo</span><span style="color:#5fb3b3;">&gt;(</span><span>STORAGE_KEY</span><span style="color:#5fb3b3;">).</span><span style="color:#6699cc;">unwrap_or_default</span><span style="color:#5fb3b3;">()
+</span><span>    </span><span style="color:#5fb3b3;">});
+</span><span>
+</span><span>	</span><span style="color:#6699cc;">use_effect_with</span><span style="color:#5fb3b3;">((*</span><span>state</span><span style="color:#5fb3b3;">).</span><span style="color:#6699cc;">clone</span><span style="color:#5fb3b3;">(), </span><span style="color:#c594c5;">move </span><span style="color:#5fb3b3;">|</span><span>user_info</span><span style="color:#5fb3b3;">| {
+</span><span>		LocalStorage</span><span style="color:#5fb3b3;">::</span><span>set</span><span style="color:#5fb3b3;">(</span><span>STORAGE_KEY</span><span style="color:#5fb3b3;">,</span><span> user_info</span><span style="color:#5fb3b3;">)
+</span><span>			</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">expect</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">failed to save state</span><span style="color:#5fb3b3;">&quot;);
+</span><span>	</span><span style="color:#5fb3b3;">});
+</span><span>
+</span><span>    html! </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#5fb3b3;">&lt;</span><span>ContextProvider</span><span style="color:#5fb3b3;">&lt;</span><span>UserInfoContext</span><span style="color:#5fb3b3;">&gt;</span><span> context</span><span style="color:#5fb3b3;">={</span><span>state</span><span style="color:#5fb3b3;">}&gt;
+</span><span>            </span><span style="color:#5fb3b3;">&lt;</span><span>Name </span><span style="color:#5fb3b3;">/&gt;
+</span><span>        </span><span style="color:#5fb3b3;">&lt;/</span><span>ContextProvider</span><span style="color:#5fb3b3;">&lt;</span><span>UserInfoContext</span><span style="color:#5fb3b3;">&gt;&gt;
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span style="color:#5fb3b3;">#[</span><span>component</span><span style="color:#5fb3b3;">]
+</span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">Name</span><span style="color:#5fb3b3;">() -&gt;</span><span> Html </span><span style="color:#5fb3b3;">{
+</span><span>    </span><span style="color:#c594c5;">let</span><span> state </span><span style="color:#5fb3b3;">= </span><span>use_context</span><span style="color:#5fb3b3;">::&lt;</span><span>UserInfoContext</span><span style="color:#5fb3b3;">&gt;()
+</span><span>        </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">expect</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">no user info context found</span><span style="color:#5fb3b3;">&quot;);
+</span><span>
+</span><span>    </span><span style="color:#c594c5;">let</span><span> oninput </span><span style="color:#5fb3b3;">= {
+</span><span>        </span><span style="color:#c594c5;">let</span><span> state </span><span style="color:#5fb3b3;">=</span><span> state</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">clone</span><span style="color:#5fb3b3;">();
+</span><span>
+</span><span>        Callback</span><span style="color:#5fb3b3;">::</span><span>from</span><span style="color:#5fb3b3;">(</span><span style="color:#c594c5;">move </span><span style="color:#5fb3b3;">|</span><span>event</span><span style="color:#5fb3b3;">:</span><span> InputEvent</span><span style="color:#5fb3b3;">| {
+</span><span>            </span><span style="color:#c594c5;">let</span><span> input</span><span style="color:#5fb3b3;">:</span><span> HtmlInputElement </span><span style="color:#5fb3b3;">=</span><span> event</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">target_unchecked_into</span><span style="color:#5fb3b3;">();
+</span><span>
+</span><span>            </span><span style="color:#c594c5;">let mut</span><span> updated </span><span style="color:#5fb3b3;">= (*</span><span>state</span><span style="color:#5fb3b3;">).</span><span style="color:#6699cc;">clone</span><span style="color:#5fb3b3;">();
+</span><span>            updated</span><span style="color:#5fb3b3;">.</span><span>name </span><span style="color:#5fb3b3;">=</span><span> input</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">value</span><span style="color:#5fb3b3;">();
+</span><span>
+</span><span>            state</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">set</span><span style="color:#5fb3b3;">(</span><span>updated</span><span style="color:#5fb3b3;">);
+</span><span>        </span><span style="color:#5fb3b3;">})
+</span><span>    </span><span style="color:#5fb3b3;">};
+</span><span>
+</span><span>    html! </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#5fb3b3;">&lt;</span><span>div</span><span style="color:#5fb3b3;">&gt;
+</span><span>            </span><span style="color:#5fb3b3;">&lt;</span><span>input
+</span><span>                </span><span style="color:#c594c5;">type</span><span style="color:#5fb3b3;">=&quot;</span><span style="color:#99c794;">text</span><span style="color:#5fb3b3;">&quot;
+</span><span>                value</span><span style="color:#5fb3b3;">={</span><span>state</span><span style="color:#5fb3b3;">.</span><span>name</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">clone</span><span style="color:#5fb3b3;">()}
+</span><span>                </span><span style="color:#5fb3b3;">{</span><span>oninput</span><span style="color:#5fb3b3;">}
+</span><span>            </span><span style="color:#5fb3b3;">/&gt;
+</span><span>
+</span><span>            </span><span style="color:#5fb3b3;">&lt;</span><span>p</span><span style="color:#5fb3b3;">&gt;{</span><span>format!</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">Current name: {}</span><span style="color:#5fb3b3;">&quot;,</span><span> state</span><span style="color:#5fb3b3;">.</span><span>name</span><span style="color:#5fb3b3;">)}&lt;/</span><span>p</span><span style="color:#5fb3b3;">&gt;
+</span><span>        </span><span style="color:#5fb3b3;">&lt;/</span><span>div</span><span style="color:#5fb3b3;">&gt;
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">main</span><span style="color:#5fb3b3;">() {
+</span><span>    yew</span><span style="color:#5fb3b3;">::</span><span>Renderer</span><span style="color:#5fb3b3;">::&lt;</span><span>App</span><span style="color:#5fb3b3;">&gt;::</span><span>new</span><span style="color:#5fb3b3;">().</span><span style="color:#6699cc;">render</span><span style="color:#5fb3b3;">();
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>So we have two <code>components</code>, one that takes the user input for the name, and outputs it right below, and another that runs our application. <code>App</code> will be our entry point the the Yew web app.</p>
+<p>One last thing we need, in the application root we will need our <code>index.html</code> file:</p>
+<pre data-lang="html" style="background-color:#2b2c2f;color:#cccece;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;!doctype html&gt; 
+</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#eb606b;">html </span><span style="color:#bb80b3;">lang</span><span style="color:#5fb3b3;">=&quot;</span><span style="color:#99c794;">en</span><span style="color:#5fb3b3;">&quot;&gt; 
+</span><span>	</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#eb606b;">head</span><span style="color:#5fb3b3;">&gt; 
+</span><span>		</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#eb606b;">meta </span><span style="color:#bb80b3;">charset</span><span style="color:#5fb3b3;">=&quot;</span><span style="color:#99c794;">utf-8</span><span style="color:#5fb3b3;">&quot; /&gt; 
+</span><span>		</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#eb606b;">title</span><span style="color:#5fb3b3;">&gt;</span><span>Yew + gloo_storage</span><span style="color:#5fb3b3;">&lt;/</span><span style="color:#eb606b;">title</span><span style="color:#5fb3b3;">&gt; 
+</span><span>	</span><span style="color:#5fb3b3;">&lt;/</span><span style="color:#eb606b;">head</span><span style="color:#5fb3b3;">&gt; 
+</span><span>	</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#eb606b;">body</span><span style="color:#5fb3b3;">&gt;&lt;/</span><span style="color:#eb606b;">body</span><span style="color:#5fb3b3;">&gt; 
+</span><span style="color:#5fb3b3;">&lt;/</span><span style="color:#eb606b;">html</span><span style="color:#5fb3b3;">&gt;
+</span></code></pre>
+<p>Now we can run with <code>trunk serve --open</code></p>
+<p>Can you see where we are using those derives I mentioned earlier? We need to do a fair bit of cloning, and our <code>name</code> field needs a default value, in this case an empty string, because of how we access it via the <code>App</code>. But what about that <code>PartialEq</code>? I will admit when I was looking through the examples for working with gloo and yew, I didn't think it was necessary, but if we remove it we see:</p>
+<pre data-lang="bash" style="background-color:#2b2c2f;color:#cccece;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#6699cc;">error[E0277]: can</span><span style="color:#5fb3b3;">&#39;</span><span style="color:#99c794;">t compare `UserInfo` with `UserInfo`
+</span><span style="color:#99c794;">  --&gt; src/main.rs:17:17
+</span><span style="color:#99c794;">   |
+</span><span style="color:#99c794;">17 |       let state = use_state_eq(|| {
+</span><span style="color:#99c794;">   |  _________________^
+</span><span style="color:#99c794;">18 | |         LocalStorage::get::&lt;UserInfo&gt;(STORAGE_KEY).unwrap_or_default()
+</span><span style="color:#99c794;">19 | |     });
+</span><span style="color:#99c794;">   | |______^ no implementation for `UserInfo == UserInfo`
+</span><span style="color:#99c794;">   |
+</span><span style="color:#99c794;">   = help: the trait `PartialEq` is not implemented for `UserInfo`
+</span></code></pre>
+<p>And there we see, it should have been obvious! Of course the method <code>use_state_eq</code> is going to need to be able to check equality in some way. So what is the <code>use_state_eq()</code> doing here? This is probably the messiest bit to look at and might seem intimidating at first.</p>
+<p>Notice that we need to use a closure with no argument first why? If we look at the <a href="https://docs.rs/yew/latest/yew/functional/fn.use_state_eq.html">documentation</a> for <code>use_state_eq</code> we can see that the parameter type it accepts is <code>init_fn: F</code>. So from the documentation <code>F</code> much implement <code>FnOnce()</code>. What the heck is that? Lets look at the <a href="https://doc.rust-lang.org/std/ops/trait.FnOnce.html">trait</a> documentation:</p>
+<blockquote>
+<p>Instances of <code>FnOnce</code> can be called, but might not be callable multiple times. Because of this, if the only thing known about a type is that it implements <code>FnOnce</code>, it can only be called once.</p>
+</blockquote>
+<p>Ok so basically we need to pass something to <code>use_state_eq</code> to initialize our <code>state</code> variable and use it in our function. Why the <code>eq</code> part? This is because, as per the definition for <code>use_state</code>:</p>
+<blockquote>
+<p>This hook will always trigger a re-render upon receiving a new state. See <a href="https://docs.rs/yew/latest/yew/functional/fn.use_state_eq.html" title="fn yew::functional::use_state_eq"><code>use_state_eq</code></a> if you want the component to only re-render when the new state compares unequal to the existing one.</p>
+</blockquote>
+<p>Ok, so we use the <code>use_state_eq</code> to only trigger a re-render when we update the user name. So whats going on inside of the closure?</p>
+<h4 id="localstorage-for-well-local-storage">LocalStorage for well local storage</h4>
+<p><code>LocalStorage::get::&lt;UserInfo&gt;(STORAGE_KEY).unwrap_or_default()</code> allows us to access the value we are using to store our app state. The first time we run the app there will be no stored state, so instead of crashing our application we just default back to <code>UserInfo::default()</code>, which gives us our empty <code>String</code>. Once things have been initialized, Yew maintains the state for us between re-renders and won't need to read from the local storage for each re-render.</p>
+<p>So then what are we doing here?</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span>	</span><span style="color:#6699cc;">use_effect_with</span><span style="color:#5fb3b3;">((*</span><span>state</span><span style="color:#5fb3b3;">).</span><span style="color:#6699cc;">clone</span><span style="color:#5fb3b3;">(), </span><span style="color:#c594c5;">move </span><span style="color:#5fb3b3;">|</span><span>user_info</span><span style="color:#5fb3b3;">| {
+</span><span>		LocalStorage</span><span style="color:#5fb3b3;">::</span><span>set</span><span style="color:#5fb3b3;">(</span><span>STORAGE_KEY</span><span style="color:#5fb3b3;">,</span><span> user_info</span><span style="color:#5fb3b3;">)
+</span><span>			</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">expect</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">failed to save state</span><span style="color:#5fb3b3;">&quot;);
+</span><span>	</span><span style="color:#5fb3b3;">});
+</span></code></pre>
+<p>We apply <code>use_effect_with</code> in order to hook the lifecycle and create a side effect, in this case, updating our local storage. Why do we need <code>(*state).clone()</code> though? Here we need to step out of our handle: <code>UseStateHnadle&lt;UserInfo&gt;</code> and directly gain access to our <code>UserInfo</code>, then we need an owned copy of the <code>UserInfo</code>. Then if the value changes we call the <code>set</code> function for the local storage, and set it to our current <code>user_info</code> value!</p>
+<p>Here is also where we get to use serde, technically for the second time, as we also use it to convert our stored state into our <code>UserInfo</code> struct. We can verify that this is happening if we view the local storage file (inspect element -&gt; Storage -&gt; Local Storage in firefox):</p>
+<pre data-lang="json" style="background-color:#2b2c2f;color:#cccece;" class="language-json "><code class="language-json" data-lang="json"><span>user-info:</span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">{</span><span style="color:#5fb3b3;">&quot;</span><span>name</span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">:</span><span style="color:#5fb3b3;">&quot;</span><span>Alex</span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">}</span><span style="color:#5fb3b3;">&quot;
+</span></code></pre>
+<p>awesome! We see our key is <code>user-info</code> which is what we expected it to be, then our struct's single field with the name as the value!</p>
+<p>There we have it, a working example of how to take user input and store it through the browser, all totally local, and have it persist across sessions! As long as the local storage isn't cleared we will have our data!</p>
+
+  </div><div class="giscus comments"></div>
+<script src="https://giscus.app/client.js"
+        data-repo="rpg-alex&#x2F;hemomorphic"
+        data-repo-id="R_kgDOQVq14Q"
+        data-category="Blog comments"
+        data-category-id="DIC_kwDOQVq14c4CzJUG"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="transparent_dark"
+        data-lang="en"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</article>
+
+    </main>
+  </div>
+  <footer><a href="mailto:mralexblood@outlook.com"><i class="svg-icon icon-mail"></i></a><a href="https://github.com/rpg-alex"><i class="svg-icon icon-github-circled"></i></a><a href="https://buymeacoffee.com/rpg.alex"><img
+    class="svg-icon"
+    src="https://hemomorphic.alexblood.net/images/bmc-brand-icon.svg"
+    alt="☕"
+    
+  ></a>
+<span class="copyright">&copy; 2025 - 2026 Alex Blood</span>
+</footer>
+  <script src="https://hemomorphic.alexblood.net/js/copy-code.js" defer></script>
+</body>
+
+</html>

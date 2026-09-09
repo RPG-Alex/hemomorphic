@@ -1,0 +1,384 @@
+<!DOCTYPE html><html lang="en-US" xml:lang="en-US">
+  
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="shortcut icon" type="image/png" sizes="32x32" href="https://hemomorphic.alexblood.net/favicon-32x32.png">
+<link rel="alternate" type="application/atom+xml" title="Atom feed" href="https://hemomorphic.alexblood.net/atom.xml">
+<link rel="stylesheet" href="https://hemomorphic.alexblood.net/main.css">
+<meta name="theme-color" content="#151515">
+<meta name="msapplication-navbutton-color" content="#151515">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=example-tracking-id"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'example-tracking-id');
+</script>
+
+<meta name="robots" content="index, follow">
+<meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+<title>Laissez-Faire Errors | Hemo-Morphic</title>
+<meta name="generator" content="Zola">
+<meta name="description" content="std::errorErrors in Rust are unique in that they can be handled in so many ways. This can be confusing and seem tedious at first, but there are advantages to being able to choose to panic! when an err…">
+<meta name="author" content="Alex Blood">
+<link rel="canonical" href="https://hemomorphic.alexblood.net/posts/laissez-faire-errors/">
+  <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://hemomorphic.alexblood.net/images/logo.png">
+  <meta name="twitter:title" content="Laissez-Faire Errors">
+  <meta name="twitter:description" content="std::errorErrors in Rust are unique in that they can be handled in so many ways. This can be confusing and seem tedious at first, but there are advantages to being able to choose to panic! when an err…">
+  
+  <meta property="og:title" content="Laissez-Faire Errors">
+  <meta property="og:description" content="std::errorErrors in Rust are unique in that they can be handled in so many ways. This can be confusing and seem tedious at first, but there are advantages to being able to choose to panic! when an err…">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://hemomorphic.alexblood.net/posts/laissez-faire-errors/">
+    <meta property="og:image" content="https://hemomorphic.alexblood.net/images/logo.png">
+
+  <meta property="og:site_name" content="Laissez-Faire Errors">
+  <meta property="og:locale" content="en_US">
+    <meta property="article:published_time" content="2026-05-27T21:30:00+08:00">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://hemomorphic.alexblood.net/posts/laissez-faire-errors"
+      },
+      "headline": "Laissez-Faire Errors",
+      "description": "std::errorErrors in Rust are unique in that they can be handled in so many ways. This can be confusing and seem tedious at first, but there are advantages to being able to choose to panic! when an err…",
+      "wordcount": "2080",
+      "datePublished": "2026-05-27T21:30:00+08:00",
+      "dateModified": "2026-05-27T21:30:00+08:00",
+      "author": {
+        "@type": "Person",
+        "name": "Alex Blood"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Laissez-Faire Errors",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://hemomorphic.alexblood.net/images/logo.png"
+        }
+      }
+    }
+    </script>
+
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <a id="a-title" href="https://hemomorphic.alexblood.net">
+        <h1>Hemo-Morphic</h1>
+      </a>
+      <h2>Static dispatch in my bloodstream</h2>
+      <nav id="navbar">
+  <a href="https://hemomorphic.alexblood.net/about" class="btn">About</a>
+  <a href="https://hemomorphic.alexblood.net/tags" class="btn">Tags</a>
+  <a href="https://github.com/rpg-alex" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+  <a href="https://buymeacoffee.com/rpg.alex" class="btn">☕ Support me</a>
+</nav>
+</div>
+  </header>
+
+  <div class="container">
+    <main>
+<article class="page">
+  <div class="header-container">
+    <h2>Laissez-Faire Errors</h2>
+    <div class="improve hide-on-mobiles">
+      
+<a href="https://github.com/rpg-alex/hemomorphic/edit/main/content/posts/laissez-faire-errors.md" title="Help improve page https://hemomorphic.alexblood.net/posts/laissez-faire-errors/">Improve this page</a>
+
+    </div>
+  </div>
+  <div class="page-info">
+    <span>Tags = [
+      <a href="https://hemomorphic.alexblood.net/tags/rust/" class="page-tag">rust</a>,
+      <a href="https://hemomorphic.alexblood.net/tags/blogging/" class="page-tag">blogging</a>,
+      <a href="https://hemomorphic.alexblood.net/tags/error-handling/" class="page-tag">error-handling</a>,
+      <a href="https://hemomorphic.alexblood.net/tags/idiomatic/" class="page-tag">idiomatic</a> ]
+    </span>
+    <time class="page-time smaller" datetime="2026-05-27T21:30:00+08:00">
+      Posted on May 27, 2026 at 21:30 +08
+    </time>
+  </div>
+  <div class="entry">
+    <h1 id="std-error"><code>std::error</code></h1>
+<p>Errors in Rust are unique in that they can be handled in so many ways. This can be confusing and seem tedious at first, but there are advantages to being able to choose to <code>panic!</code> when an <code>error</code> is reached, or extending your own errors in  such a way as to add context-specific information. <a href="https://blog.cloudflare.com/18-november-2025-outage/#memory-preallocation">Or you can choose to simply <code>unwrap()</code> when an error is reached</a>.  I am personally fond of creating errors using a custom <code>enum</code> and adding them as they are needed. Hence the title, <em>laissez-faire</em> errors.</p>
+<span id="continue-reading"></span>
+<p>Errors in Rust are handled with the <code>Result</code> <code>enum</code>, and specifically as <code>Result&lt;T,E&gt;</code>, where <code>T</code> is a generic for the expected return type, an <code>i32</code> for example, and <code>E</code> is an error type, such as <code>std::io::Error</code> for example.</p>
+<h2 id="errors-help">errors --help</h2>
+<p>There are three main ways to handle a <code>Result&lt;T,E&gt;</code>:</p>
+<ol>
+<li><strong>Ignore it</strong>: use an <code>unwrap()</code> - which is the quick and dirty way of handling errors, or rather not handling them and assuming there never will be, or if there are errors, that a <code>panic!</code> is what you want to see. This is the least idiomatic method for production Rust.</li>
+<li><strong>Explicitly</strong>: Use a <code>match</code> statement against the <code>Result</code> <code>enum</code> itself, and do something with the <code>Error</code> variant manually. Viable but a headache in anything larger than a toy sized program.</li>
+<li><strong>Propagate:</strong> Use the <code>?</code> operator and ensure that your methods are themselves returning the <code>Result</code> <code>enum</code>, and then at some point handle the error itself, as it bubbles up through your program's abstractions. This is the most idiomatic approach for production Rust, and simply extracts or unwraps (safely this time) the value if it's <code>Ok</code>, and if it is an error, returns the error for the function and terminates running the remaining function.</li>
+</ol>
+<h3 id="errors-run-examples">errors --run --examples</h3>
+<p>Let's make a function that returns a <code>Result&lt;T,E&gt;</code>, and then use it for our examples. In this case it will take a parameter <code>input: i32</code> and check if it is divisible by two, returning the value if valid and an error if it is not (odd numbers cause errors). Why? Because it's the simplest example I could think of to illustrate the concepts I want to focus on for this example. Keep in mind these principles will remain the same regardless of the complexity of a function, we are focused on the return type and handling errors.</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">pub fn </span><span style="color:#6699cc;">divisible_by_two</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">input</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">i32</span><span style="color:#5fb3b3;">) -&gt; </span><span style="color:#fac863;">Result</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#c594c5;">i32</span><span>, LaissezError</span><span style="color:#5fb3b3;">&gt; {
+</span><span>	</span><span style="color:#5f6364;">// use the modulus here to check for remainder
+</span><span>	</span><span style="color:#c594c5;">match</span><span> input </span><span style="color:#5fb3b3;">% </span><span style="color:#f99157;">2 </span><span style="color:#5fb3b3;">{
+</span><span>		</span><span style="color:#f99157;">0 </span><span style="color:#5fb3b3;">=&gt; </span><span style="color:#fac863;">Ok</span><span style="color:#5fb3b3;">(</span><span>input</span><span style="color:#5fb3b3;">),
+</span><span>		</span><span style="color:#5fb3b3;">_ =&gt; </span><span style="color:#fac863;">Err</span><span style="color:#5fb3b3;">(</span><span>LaissezError</span><span style="color:#5fb3b3;">::</span><span>NotEven</span><span style="color:#5fb3b3;">)
+</span><span>	</span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>Note that for this example we are going to implement our own error type, which is part of my goal of this project, to show <em>how ergonomic error handling is</em> with vanilla Rust.</p>
+<p><strong>Our error <code>enum</code>:</strong></p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#5fb3b3;">#[</span><span>derive</span><span style="color:#5fb3b3;">(</span><span>Debug</span><span style="color:#5fb3b3;">)]
+</span><span style="color:#c594c5;">pub enum </span><span>LaissezError </span><span style="color:#5fb3b3;">{  
+</span><span>	NotEven</span><span style="color:#5fb3b3;">,  
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>And now we have a handy <code>enum</code> for our errors. As I'll show later, we can simply grow our error variants as our code base grows. Hence the name <code>LaissezError</code>, let the actual code base's error needs decide what is included here. I have added a <code>debug</code> derive for now, as it's necessary to derive your error <code>enum</code> for debugging to use it, and later we will add a <code>Display</code> implementation for the formatting info about the error.</p>
+<h4 id="unwrap"><code>unwrap()</code></h4>
+<p>The first and most reckless way to handle a <code>Result</code> is to call <code>unwrap()</code>. I'll illustrate this with a valid value, <code>4</code>, and an invalid value <code>3</code>.</p>
+<p>This first value could be dropped anywhere and be safe to use:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#5f6364;">// this value will unwrap into the `Ok` variant and be safe to use later
+</span><span style="color:#c594c5;">let</span><span> value1 </span><span style="color:#5fb3b3;">= </span><span style="color:#6699cc;">divisible_by_two</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">4</span><span style="color:#5fb3b3;">).</span><span style="color:#6699cc;">unwrap</span><span style="color:#5fb3b3;">();
+</span></code></pre>
+<p>Note the lurking danger. This gives the impression that <code>divisible_by_two</code> is easy to anticipate and therefore can be assumed to succeed. But if that is the case, why would the author of the function even include a <code>Result</code> as the return type? Generally speaking using the <code>unwrap()</code> is only justified in things like <em>unit tests</em>, where the value is expected to be the <code>T</code> type, and is usually set a few lines before. But what happens if you run the code below?</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#5f6364;">// this will unwrap the `Result` but because it is the `Err` variant it will panic
+</span><span style="color:#c594c5;">let</span><span> value2 </span><span style="color:#5fb3b3;">= </span><span style="color:#6699cc;">divisible_by_two</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">3</span><span style="color:#5fb3b3;">).</span><span style="color:#6699cc;">unwrap</span><span style="color:#5fb3b3;">();
+</span></code></pre>
+<p>This will <code>panic</code> and return:</p>
+<pre data-lang="bash" style="background-color:#2b2c2f;color:#cccece;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#6699cc;">thread </span><span style="color:#5fb3b3;">&#39;</span><span style="color:#99c794;">main</span><span style="color:#5fb3b3;">&#39;</span><span style="color:#6699cc;"> (824531</span><span>) </span><span style="color:#6699cc;">panicked at </span><span style="color:#5fb3b3;">{</span><span style="color:#6699cc;">file_name</span><span style="color:#5fb3b3;">}</span><span style="color:#6699cc;">.rs:</span><span style="color:#5fb3b3;">{</span><span style="color:#6699cc;">line</span><span style="color:#5fb3b3;">}</span><span style="color:#6699cc;">:</span><span style="color:#5fb3b3;">{</span><span style="color:#6699cc;">column</span><span style="color:#5fb3b3;">}</span><span style="color:#6699cc;">:
+</span><span style="color:#6699cc;">called </span><span style="color:#5fb3b3;">`</span><span style="color:#6699cc;">Result::unwrap</span><span style="color:#5fb3b3;">()</span><span style="color:#6699cc;">` on an `Err` value: NotEven
+</span><span style="color:#6699cc;">note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</span></code></pre>
+<p>And this is not ideal. Note that a <code>panic</code> will <a href="https://doc.rust-lang.org/std/macro.panic.html">kill</a> the currently running program. Unless that is the desired effect (which it rarely is), this should not be the go to for error handling.</p>
+<h4 id="explicit-match">Explicit <code>match</code></h4>
+<p>The next best way to handle the <code>Result</code> variants, is to match them. This may well be the best solution, depending on the context:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">let</span><span> value </span><span style="color:#5fb3b3;">= </span><span style="color:#c594c5;">match </span><span style="color:#6699cc;">divisible_by_two</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">3</span><span style="color:#5fb3b3;">) {
+</span><span>	</span><span style="color:#fac863;">Ok</span><span style="color:#5fb3b3;">(</span><span>value</span><span style="color:#5fb3b3;">) =&gt;</span><span> value</span><span style="color:#5fb3b3;">,
+</span><span>	</span><span style="color:#fac863;">Err</span><span style="color:#5fb3b3;">(</span><span>err</span><span style="color:#5fb3b3;">) =&gt; {
+</span><span>		</span><span style="color:#5f6364;">// do something with the error like default to 0
+</span><span>		println!</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">{err}</span><span style="color:#5fb3b3;">&quot;);
+</span><span>		</span><span style="color:#f99157;">0
+</span><span>	</span><span style="color:#5fb3b3;">} 
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>Notice that this function handles the error in the moment the <code>divisible_by_two()</code> function returns. You could elect to substitute a value if the value is not divisible by two, or still opt to manually invoke a <code>panic!</code>, or any other of a number of options that would make sense in the context of the code base being used. Oftentimes it may be helpful to output the error, let's add a <code>fmt</code> block for the error <code>enum</code>:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">impl </span><span>std</span><span style="color:#5fb3b3;">::</span><span>fmt</span><span style="color:#5fb3b3;">::</span><span>Display </span><span style="color:#c594c5;">for </span><span>LaissezError </span><span style="color:#5fb3b3;">{
+</span><span>	</span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">fmt</span><span style="color:#5fb3b3;">(&amp;</span><span style="color:#f99157;">self</span><span>, </span><span style="color:#f99157;">f</span><span style="color:#5fb3b3;">: &amp;</span><span style="color:#c594c5;">mut </span><span>std</span><span style="color:#5fb3b3;">::</span><span>fmt</span><span style="color:#5fb3b3;">::</span><span>Formatter</span><span style="color:#5fb3b3;">&lt;</span><span>&#39;</span><span style="color:#5fb3b3;">_&gt;) -&gt; </span><span>std</span><span style="color:#5fb3b3;">::</span><span>fmt</span><span style="color:#5fb3b3;">::</span><span>Result </span><span style="color:#5fb3b3;">{
+</span><span>		</span><span style="color:#c594c5;">match </span><span style="color:#ec5f67;">self </span><span style="color:#5fb3b3;">{
+</span><span>			</span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>NotEven </span><span style="color:#5fb3b3;">=&gt; </span><span>write!</span><span style="color:#5fb3b3;">(</span><span>f, </span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">The number is not even!</span><span style="color:#5fb3b3;">&quot;)
+</span><span>		</span><span style="color:#5fb3b3;">}
+</span><span>	</span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>Rust makes it very easy to format errors. Now we can try using a match statement. To keep in line with the first example, we'll convert the <code>i32</code> to <code>string</code> as well, so we can still assign the match return to a single variable:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">main</span><span style="color:#5fb3b3;">() {
+</span><span>        </span><span style="color:#c594c5;">let</span><span> value </span><span style="color:#5fb3b3;">= </span><span style="color:#c594c5;">match </span><span style="color:#6699cc;">divisible_by_two</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">3</span><span style="color:#5fb3b3;">) {
+</span><span>                </span><span style="color:#fac863;">Ok</span><span style="color:#5fb3b3;">(</span><span>val</span><span style="color:#5fb3b3;">) =&gt;</span><span> val</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">to_string</span><span style="color:#5fb3b3;">(),
+</span><span>                </span><span style="color:#fac863;">Err</span><span style="color:#5fb3b3;">(</span><span>err</span><span style="color:#5fb3b3;">) =&gt;</span><span> err</span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">to_string</span><span style="color:#5fb3b3;">()
+</span><span>        </span><span style="color:#5fb3b3;">};
+</span><span>        println!</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">{value}</span><span style="color:#5fb3b3;">&quot;);
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>Running this you should now see:</p>
+<pre data-lang="bash" style="background-color:#2b2c2f;color:#cccece;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#6699cc;">The number is not even!
+</span></code></pre>
+<p>Which only outputs because we ran the <code>println!</code> macro. Notice that the program never has the opportunity to panic anymore. Instead we explicitly handle the error when it's encountered. Depending on the context of where the error is being returned, using a <code>match</code> statement and having some predetermined response to handle the <code>Err</code> variant, you could a number of actions, such as returning a default value or again, still panicking the program, perhaps with additional information about the error.</p>
+<p>We should go a step further and implement the <code>std::error::Error</code> for our error:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">impl </span><span>std</span><span style="color:#5fb3b3;">::</span><span>error</span><span style="color:#5fb3b3;">::</span><span>Error </span><span style="color:#c594c5;">for </span><span>LaissezError </span><span style="color:#5fb3b3;">{}
+</span></code></pre>
+<h4 id="propagating-with">Propagating with <code>?</code></h4>
+<p>More often than not the context of where the error is first being returned isn't the ideal location to handle errors. Ideally errors are being handled explicitly, such as above with a <code>match</code> statement, in as few places as possible. Thus it becomes necessary to <em>propagate</em>, or pass the error up, the layers of your application to where it will be processed and used. Luckily doing is very straightforward:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">main</span><span style="color:#5fb3b3;">() -&gt; </span><span style="color:#fac863;">Result</span><span style="color:#5fb3b3;">&lt;()</span><span>,LaissezError</span><span style="color:#5fb3b3;">&gt; {
+</span><span>	</span><span style="color:#c594c5;">let</span><span> value </span><span style="color:#5fb3b3;">= </span><span style="color:#6699cc;">divisible_by_two</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">3</span><span style="color:#5fb3b3;">)?;
+</span><span>	println!</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">{value}</span><span style="color:#5fb3b3;">&quot;);
+</span><span>
+</span><span>	</span><span style="color:#fac863;">Ok</span><span style="color:#5fb3b3;">(())
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>Note that in this case <code>main()</code> is modified to return <code>()</code> - <a href="https://doc.rust-lang.org/std/primitive.unit.html">unit</a> or <code>LaissezError</code>. When <code>main</code> exits with an error, Rust prints the error using its <code>Debug</code> representation:</p>
+<pre data-lang="bash" style="background-color:#2b2c2f;color:#cccece;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#6699cc;">Error: NotEven
+</span></code></pre>
+<p>It's worth noting that propagation is very powerful in handling errors. Again the nature of propagating the error through layers of the application helps ensure their <code>Result</code> can be handled in the layer above. Clippy will also not let you propagate an error without fixing your function signature, note that leaving main to return <code>()</code> only will result in this error when trying to use the <code>?</code> operator to unwrap the value:</p>
+<pre data-lang="bash" style="background-color:#2b2c2f;color:#cccece;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#6699cc;">error[E0277]: the </span><span style="color:#5fb3b3;">`</span><span style="color:#6699cc;">?</span><span style="color:#5fb3b3;">`</span><span style="color:#6699cc;"> operator can only be used in a function that returns </span><span style="color:#5fb3b3;">`</span><span style="color:#6699cc;">Result</span><span style="color:#5fb3b3;">`</span><span style="color:#6699cc;"> or </span><span style="color:#5fb3b3;">`</span><span style="color:#6699cc;">Option</span><span style="color:#5fb3b3;">`</span><span style="color:#6699cc;"> (or another type that implements </span><span style="color:#5fb3b3;">`</span><span style="color:#6699cc;">FromResidual</span><span style="color:#5fb3b3;">`</span><span>)
+</span><span> </span><span style="color:#6699cc;">--</span><span style="color:#5fb3b3;">&gt; {</span><span style="color:#6699cc;">file</span><span style="color:#5fb3b3;">}</span><span style="color:#6699cc;">.rs:3:33
+</span><span>  </span><span style="color:#5fb3b3;">|
+</span><span style="color:#6699cc;">2 </span><span style="color:#5fb3b3;">| </span><span style="color:#6699cc;">fn main(</span><span>) </span><span style="color:#5fb3b3;">{
+</span><span>  </span><span style="color:#5fb3b3;">| </span><span style="color:#6699cc;">--------- this function should return </span><span style="color:#5fb3b3;">`</span><span style="color:#6699cc;">Result</span><span style="color:#5fb3b3;">`</span><span style="color:#6699cc;"> or </span><span style="color:#5fb3b3;">`</span><span style="color:#6699cc;">Option</span><span style="color:#5fb3b3;">`</span><span style="color:#6699cc;"> to accept </span><span style="color:#5fb3b3;">`</span><span style="color:#6699cc;">?</span><span style="color:#5fb3b3;">`
+</span><span style="color:#6699cc;">3 </span><span style="color:#5fb3b3;">|     </span><span style="color:#6699cc;">let value </span><span style="color:#5fb3b3;">=</span><span style="color:#6699cc;"> divisible_by_two</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">3</span><span style="color:#5fb3b3;">)?;
+</span><span>  </span><span style="color:#5fb3b3;">|                                    </span><span style="color:#6699cc;">^ cannot use the </span><span style="color:#5fb3b3;">`</span><span style="color:#6699cc;">?</span><span style="color:#5fb3b3;">`</span><span style="color:#6699cc;"> operator in a function that returns </span><span style="color:#5fb3b3;">`()`
+</span><span>  </span><span style="color:#5fb3b3;">|
+</span><span style="color:#6699cc;">help: consider adding return type
+</span><span>  </span><span style="color:#5fb3b3;">|
+</span><span style="color:#6699cc;">2 </span><span style="color:#5fb3b3;">| </span><span style="color:#6699cc;">fn main(</span><span>) </span><span style="color:#6699cc;">-</span><span style="color:#5fb3b3;">&gt;</span><span style="color:#6699cc;"> Result</span><span style="color:#5fb3b3;">&lt;()</span><span style="color:#6699cc;">, Box</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#6699cc;">dyn std::error::Error</span><span style="color:#5fb3b3;">&gt;&gt; {
+</span><span style="color:#6699cc;">  |           +++++++++++++++++++++++++++++++++++++++++
+</span></code></pre>
+<p>Note that we do not want to return an <code>std::error::Error</code>, or rather can't as it is a trait, implemented by errors. But we could extend our <code>enum</code> to be able to come <em>from</em> another error type.</p>
+<h3 id="from-error"><code>From Error</code></h3>
+<p>We can easily wrap another error type, such as the <code>std::num::ParseIntError</code> in our <code>LaissezError</code>, as we can then try to parse <code>i32</code> from a <code>&amp;str</code> and use our error <code>enum</code> to handle it when it goes wrong! To do so we should first add a new variant:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#5fb3b3;">#[</span><span>derive</span><span style="color:#5fb3b3;">(</span><span>Debug</span><span style="color:#5fb3b3;">)]
+</span><span style="color:#c594c5;">pub enum </span><span>LaissezError </span><span style="color:#5fb3b3;">{  
+</span><span>	NotEven</span><span style="color:#5fb3b3;">,
+</span><span>	ParseInt</span><span style="color:#5fb3b3;">(</span><span>std</span><span style="color:#5fb3b3;">::</span><span>num</span><span style="color:#5fb3b3;">::</span><span>ParseIntError</span><span style="color:#5fb3b3;">)
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>Then we can use a <code>From</code> block to do the wrapping:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">impl </span><span style="color:#fac863;">From</span><span style="color:#5fb3b3;">&lt;</span><span>std</span><span style="color:#5fb3b3;">::</span><span>num</span><span style="color:#5fb3b3;">::</span><span>ParseIntError</span><span style="color:#5fb3b3;">&gt; </span><span style="color:#c594c5;">for </span><span>LaissezError </span><span style="color:#5fb3b3;">{
+</span><span>    </span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">from</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">error</span><span style="color:#5fb3b3;">: </span><span>std</span><span style="color:#5fb3b3;">::</span><span>num</span><span style="color:#5fb3b3;">::</span><span>ParseIntError</span><span style="color:#5fb3b3;">) -&gt; </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>ParseInt</span><span style="color:#5fb3b3;">(</span><span>error</span><span style="color:#5fb3b3;">)
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>And now if we extend our program with a function to parse the number from a <code>&amp;str</code>, can then check if it's divisible by 2 directly inside the <code>parse_and_check</code> function we have:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">pub fn </span><span style="color:#6699cc;">parse_and_check</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">input</span><span style="color:#5fb3b3;">: &amp;</span><span style="color:#c594c5;">str</span><span style="color:#5fb3b3;">) -&gt; </span><span style="color:#fac863;">Result</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#c594c5;">i32</span><span>, LaissezError</span><span style="color:#5fb3b3;">&gt; {
+</span><span>    </span><span style="color:#c594c5;">let</span><span> number </span><span style="color:#5fb3b3;">=</span><span> input</span><span style="color:#5fb3b3;">.</span><span>parse</span><span style="color:#5fb3b3;">::&lt;</span><span style="color:#c594c5;">i32</span><span style="color:#5fb3b3;">&gt;()?;
+</span><span>    </span><span style="color:#6699cc;">divisible_by_two</span><span style="color:#5fb3b3;">(</span><span>number</span><span style="color:#5fb3b3;">)
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>So a few things to note, our <code>Result</code> is returning <code>i32</code>, same as the <code>divisible_by_two</code>, and our error is the same, our <code>LaissezError</code>! So now there is the possibility for our code to return two separate error variants. However we do not need to update <code>main</code> as it will know what to do for either variant of our error!</p>
+<p><em>note on generics</em>: This post isn't about <em>generics</em>. but above we have used <code>parse::&lt;i32&gt;()</code>, which is necessary as <code>parse</code> is implemented for multiple primitive types, and the function needs to know the type to function properly. This is a bit outside the scope of this post, but generics are something I plan on exploring more later on and worth noting here.</p>
+<p>In the <code>parse_and_check()</code> function above, the line:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span>   </span><span style="color:#c594c5;">let</span><span> number </span><span style="color:#5fb3b3;">=</span><span> input</span><span style="color:#5fb3b3;">.</span><span>parse</span><span style="color:#5fb3b3;">::&lt;</span><span style="color:#c594c5;">i32</span><span style="color:#5fb3b3;">&gt;()?;
+</span></code></pre>
+<p>Will return <code>Result&lt;i32, std::num::ParseIntError&gt;</code>, and thanks to our <code>From</code> block, we are able to wrap that error in our <code>LaissezFaire</code> error. We can also update our <code>fmt</code> block to reflect that is error is a wrapped error:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">impl </span><span>std</span><span style="color:#5fb3b3;">::</span><span>fmt</span><span style="color:#5fb3b3;">::</span><span>Display </span><span style="color:#c594c5;">for </span><span>LaissezError </span><span style="color:#5fb3b3;">{
+</span><span>	</span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">fmt</span><span style="color:#5fb3b3;">(&amp;</span><span style="color:#f99157;">self</span><span>, </span><span style="color:#f99157;">f</span><span style="color:#5fb3b3;">: &amp;</span><span style="color:#c594c5;">mut </span><span>std</span><span style="color:#5fb3b3;">::</span><span>fmt</span><span style="color:#5fb3b3;">::</span><span>Formatter</span><span style="color:#5fb3b3;">&lt;</span><span>&#39;</span><span style="color:#5fb3b3;">_&gt;) -&gt; </span><span>std</span><span style="color:#5fb3b3;">::</span><span>fmt</span><span style="color:#5fb3b3;">::</span><span>Result </span><span style="color:#5fb3b3;">{
+</span><span>		</span><span style="color:#c594c5;">match </span><span style="color:#ec5f67;">self </span><span style="color:#5fb3b3;">{
+</span><span>			</span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>NotEven </span><span style="color:#5fb3b3;">=&gt; </span><span>write!</span><span style="color:#5fb3b3;">(</span><span>f, </span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">The number is not even!</span><span style="color:#5fb3b3;">&quot;),
+</span><span>			</span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>ParseInt</span><span style="color:#5fb3b3;">(</span><span>error</span><span style="color:#5fb3b3;">) =&gt; </span><span>write!</span><span style="color:#5fb3b3;">(</span><span>f,</span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">failed to parse value, {}</span><span style="color:#5fb3b3;">&quot;,</span><span> error</span><span style="color:#5fb3b3;">)
+</span><span>		</span><span style="color:#5fb3b3;">}
+</span><span>	</span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>Note that you can choose to use the wrapped error or discard it. I have chosen to output my own message followed by the <code>ParseIntError</code> message from its own <code>fmt</code>:</p>
+<pre data-lang="bash" style="background-color:#2b2c2f;color:#cccece;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#6699cc;">Error: ParseInt(ParseIntError </span><span style="color:#5fb3b3;">{</span><span style="color:#6699cc;"> kind: InvalidDigit </span><span style="color:#5fb3b3;">}</span><span>)
+</span></code></pre>
+<p>And now we have added a new error variant to our <code>enum</code>. We didn't write it until we needed it, and thanks to Rust's <em>compiler</em> we know that we will be able to successfully wrap the <code>std</code> error.</p>
+<h2 id="laissez-faire-errors">Laissez-Faire errors</h2>
+<p>So the goal of this post was to give an introduction to writing your own errors, which we have covered; but it is also to discuss the philosophy of error writing. I coin the term <em>Laissez-Faire errors</em> based on the term <a href="https://en.wikipedia.org/wiki/Laissez-faire">Laissez-Faire</a>, commonly used to refer to any economic system where people can trade freely, when the <em>need</em> arises. Here though Laissez-Faire style error handling is referring to when to create new errors: when they're needed.</p>
+<p>It may be a bit of a subtle point but I would originally get bogged down with error handling in some of my first projects with Rust, and wind up writing an enormous <code>enum</code> with errors for every potential error that may arise. The result was a finished project, where I saw a lot of the enums go unused. If the <code>enum</code> wasn't used often, that isn't a big issue, but imagine if we extended the <code>LaissezError</code> <code>enum</code> to have 10 variants based on how we imagined using it at first, for issues we anticipated <em>might</em> come up:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#5fb3b3;">#[</span><span>derive</span><span style="color:#5fb3b3;">(</span><span>Debug</span><span style="color:#5fb3b3;">)]
+</span><span style="color:#c594c5;">pub enum </span><span>LaissezError </span><span style="color:#5fb3b3;">{  
+</span><span>	NotEven</span><span style="color:#5fb3b3;">,
+</span><span>	ParseInt</span><span style="color:#5fb3b3;">(</span><span>std</span><span style="color:#5fb3b3;">::</span><span>num</span><span style="color:#5fb3b3;">::</span><span>ParseIntError</span><span style="color:#5fb3b3;">),
+</span><span>	Zero</span><span style="color:#5fb3b3;">,
+</span><span>	IO</span><span style="color:#5fb3b3;">(</span><span>std</span><span style="color:#5fb3b3;">::</span><span>io</span><span style="color:#5fb3b3;">::</span><span>Error</span><span style="color:#5fb3b3;">),
+</span><span>	TypeError</span><span style="color:#5fb3b3;">,
+</span><span>	OtherCrateError</span><span style="color:#5fb3b3;">(</span><span>OtherCrate</span><span style="color:#5fb3b3;">::</span><span>Error</span><span style="color:#5fb3b3;">),
+</span><span>	NegativeInt</span><span style="color:#5fb3b3;">,
+</span><span>	IntTooLarge</span><span style="color:#5fb3b3;">,
+</span><span>	IntTooSmall</span><span style="color:#5fb3b3;">,
+</span><span>	FloatInf</span><span style="color:#5fb3b3;">,	
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>Now with all of these extra error types we get to enjoy writing first our <code>fmt</code> block:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">impl </span><span>std</span><span style="color:#5fb3b3;">::</span><span>fmt</span><span style="color:#5fb3b3;">::</span><span>Display </span><span style="color:#c594c5;">for </span><span>LaissezError </span><span style="color:#5fb3b3;">{
+</span><span>    </span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">fmt</span><span style="color:#5fb3b3;">(&amp;</span><span style="color:#f99157;">self</span><span>, </span><span style="color:#f99157;">f</span><span style="color:#5fb3b3;">: &amp;</span><span style="color:#c594c5;">mut </span><span>std</span><span style="color:#5fb3b3;">::</span><span>fmt</span><span style="color:#5fb3b3;">::</span><span>Formatter</span><span style="color:#5fb3b3;">&lt;</span><span>&#39;</span><span style="color:#5fb3b3;">_&gt;) -&gt; </span><span>std</span><span style="color:#5fb3b3;">::</span><span>fmt</span><span style="color:#5fb3b3;">::</span><span>Result </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#c594c5;">match </span><span style="color:#ec5f67;">self </span><span style="color:#5fb3b3;">{
+</span><span>            </span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>NotEven </span><span style="color:#5fb3b3;">=&gt; </span><span>write!</span><span style="color:#5fb3b3;">(</span><span>f, </span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">the number is not even</span><span style="color:#5fb3b3;">&quot;),
+</span><span>            </span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>ParseInt</span><span style="color:#5fb3b3;">(</span><span>error</span><span style="color:#5fb3b3;">) =&gt; </span><span>write!</span><span style="color:#5fb3b3;">(</span><span>f, </span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">failed to parse integer: {error}</span><span style="color:#5fb3b3;">&quot;),
+</span><span>            </span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>Zero </span><span style="color:#5fb3b3;">=&gt; </span><span>write!</span><span style="color:#5fb3b3;">(</span><span>f, </span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">the number cannot be zero</span><span style="color:#5fb3b3;">&quot;),
+</span><span>            </span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>IO</span><span style="color:#5fb3b3;">(</span><span>error</span><span style="color:#5fb3b3;">) =&gt; </span><span>write!</span><span style="color:#5fb3b3;">(</span><span>f, </span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">I/O error: {error}</span><span style="color:#5fb3b3;">&quot;),
+</span><span>            </span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>TypeError </span><span style="color:#5fb3b3;">=&gt; </span><span>write!</span><span style="color:#5fb3b3;">(</span><span>f, </span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">the value had the wrong type</span><span style="color:#5fb3b3;">&quot;),
+</span><span>            </span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>OtherCrateError</span><span style="color:#5fb3b3;">(</span><span>error</span><span style="color:#5fb3b3;">) =&gt; </span><span>write!</span><span style="color:#5fb3b3;">(</span><span>f, </span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">other crate error: {error}</span><span style="color:#5fb3b3;">&quot;),
+</span><span>            </span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>NegativeInt </span><span style="color:#5fb3b3;">=&gt; </span><span>write!</span><span style="color:#5fb3b3;">(</span><span>f, </span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">the number cannot be negative</span><span style="color:#5fb3b3;">&quot;),
+</span><span>            </span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>IntTooLarge </span><span style="color:#5fb3b3;">=&gt; </span><span>write!</span><span style="color:#5fb3b3;">(</span><span>f, </span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">the number is too large</span><span style="color:#5fb3b3;">&quot;),
+</span><span>            </span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>IntTooSmall </span><span style="color:#5fb3b3;">=&gt; </span><span>write!</span><span style="color:#5fb3b3;">(</span><span>f, </span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">the number is too small</span><span style="color:#5fb3b3;">&quot;),
+</span><span>            </span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>FloatInf </span><span style="color:#5fb3b3;">=&gt; </span><span>write!</span><span style="color:#5fb3b3;">(</span><span>f, </span><span style="color:#5fb3b3;">&quot;</span><span style="color:#99c794;">the floating-point value was infinite</span><span style="color:#5fb3b3;">&quot;),
+</span><span>        </span><span style="color:#5fb3b3;">}
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>Well that wasn't too bad. You can use match auto fill if your IDE supports it then just complete each branch. Still a bit tedious. But now there are still the <code>From</code> blocks for the errors being wrapped in our error:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">impl </span><span style="color:#fac863;">From</span><span style="color:#5fb3b3;">&lt;</span><span>std</span><span style="color:#5fb3b3;">::</span><span>num</span><span style="color:#5fb3b3;">::</span><span>ParseIntError</span><span style="color:#5fb3b3;">&gt; </span><span style="color:#c594c5;">for </span><span>LaissezError </span><span style="color:#5fb3b3;">{
+</span><span>    </span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">from</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">error</span><span style="color:#5fb3b3;">: </span><span>std</span><span style="color:#5fb3b3;">::</span><span>num</span><span style="color:#5fb3b3;">::</span><span>ParseIntError</span><span style="color:#5fb3b3;">) -&gt; </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>ParseInt</span><span style="color:#5fb3b3;">(</span><span>error</span><span style="color:#5fb3b3;">)
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span style="color:#c594c5;">impl </span><span style="color:#fac863;">From</span><span style="color:#5fb3b3;">&lt;</span><span>std</span><span style="color:#5fb3b3;">::</span><span>io</span><span style="color:#5fb3b3;">::</span><span>Error</span><span style="color:#5fb3b3;">&gt; </span><span style="color:#c594c5;">for </span><span>LaissezError </span><span style="color:#5fb3b3;">{
+</span><span>    </span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">from</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">error</span><span style="color:#5fb3b3;">: </span><span>std</span><span style="color:#5fb3b3;">::</span><span>io</span><span style="color:#5fb3b3;">::</span><span>Error</span><span style="color:#5fb3b3;">) -&gt; </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>IO</span><span style="color:#5fb3b3;">(</span><span>error</span><span style="color:#5fb3b3;">)
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span style="color:#c594c5;">impl </span><span style="color:#fac863;">From</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#c594c5;">OtherCrate</span><span style="color:#5fb3b3;">::</span><span>Error</span><span style="color:#5fb3b3;">&gt; </span><span style="color:#c594c5;">for </span><span>LaissezError </span><span style="color:#5fb3b3;">{
+</span><span>    </span><span style="color:#c594c5;">fn </span><span style="color:#6699cc;">from</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">error</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">OtherCrate</span><span style="color:#5fb3b3;">::</span><span>Error</span><span style="color:#5fb3b3;">) -&gt; </span><span style="color:#c594c5;">Self </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#c594c5;">Self</span><span style="color:#5fb3b3;">::</span><span>OtherCrateError</span><span style="color:#5fb3b3;">(</span><span>error</span><span style="color:#5fb3b3;">)
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>Not too bad right? But now imagine writing all of those error variants at the beginning, before writing even the <code>divide_by_two()</code> function, and then later finding that many of the errors were not necessary or even made sense as the crate grows and changes. Instead, why not just write the errors as they arise? Hence: <em>Laissez-Faire Errors</em>. Just write them as they become necessary. The smallest iteration I can think of is still, a single <code>enum</code> branch with the <code>fmt</code>. Once you have that, it's very trivial to add another variant. Anyhow, it can be even simpler to write errors as well....</p>
+<h3 id="cargo-add-anyhow-thiserror">cargo add <a href="https://docs.rs/anyhow">anyhow</a> / <a href="https://docs.rs/thiserror/latest/thiserror/">thiserror</a></h3>
+<p>If you are looking to simplify your errors a step further, you can try the <em>thiserror</em> crate. if we wanted to apply it to our error type we could do something like:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">use </span><span>thiserror</span><span style="color:#5fb3b3;">::</span><span>Error</span><span style="color:#5fb3b3;">;
+</span><span>
+</span><span style="color:#5fb3b3;">#[</span><span>derive</span><span style="color:#5fb3b3;">(</span><span>Debug</span><span style="color:#5fb3b3;">,</span><span> Error</span><span style="color:#5fb3b3;">)]
+</span><span style="color:#c594c5;">pub enum </span><span>LaissezError </span><span style="color:#5fb3b3;">{
+</span><span>	</span><span style="color:#5fb3b3;">#[</span><span>error</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">The number is not even!</span><span style="color:#5fb3b3;">&quot;)]  
+</span><span>	NotEven</span><span style="color:#5fb3b3;">,
+</span><span>	</span><span style="color:#5fb3b3;">#[</span><span>error</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">failed to parse value, {0}</span><span style="color:#5fb3b3;">&quot;)]
+</span><span>	ParseInt</span><span style="color:#5fb3b3;">(#[</span><span>from</span><span style="color:#5fb3b3;">] </span><span>std</span><span style="color:#5fb3b3;">::</span><span>num</span><span style="color:#5fb3b3;">::</span><span>ParseIntError</span><span style="color:#5fb3b3;">),
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>This works well, but if you aren't working with a particular need for a diverse set of errors, we can simplify it further with the <em>anyhow</em> crate, and handle the errors in the actual functions returning <code>Result</code>:</p>
+<pre data-lang="rust" style="background-color:#2b2c2f;color:#cccece;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c594c5;">use </span><span>anyhow</span><span style="color:#5fb3b3;">::{</span><span>bail</span><span style="color:#5fb3b3;">,</span><span> Context</span><span style="color:#5fb3b3;">, </span><span style="color:#fac863;">Result</span><span style="color:#5fb3b3;">};
+</span><span>
+</span><span style="color:#c594c5;">pub fn </span><span style="color:#6699cc;">divisible_by_two</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">input</span><span style="color:#5fb3b3;">: </span><span style="color:#c594c5;">i32</span><span style="color:#5fb3b3;">) -&gt; </span><span style="color:#fac863;">Result</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#c594c5;">i32</span><span style="color:#5fb3b3;">&gt; {
+</span><span>    </span><span style="color:#c594c5;">match</span><span> input </span><span style="color:#5fb3b3;">% </span><span style="color:#f99157;">2 </span><span style="color:#5fb3b3;">{
+</span><span>        </span><span style="color:#f99157;">0 </span><span style="color:#5fb3b3;">=&gt; </span><span style="color:#fac863;">Ok</span><span style="color:#5fb3b3;">(</span><span>input</span><span style="color:#5fb3b3;">),
+</span><span>        </span><span style="color:#5fb3b3;">_ =&gt; </span><span>bail!</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">the number is not even!</span><span style="color:#5fb3b3;">&quot;),
+</span><span>    </span><span style="color:#5fb3b3;">}
+</span><span style="color:#5fb3b3;">}
+</span><span>
+</span><span style="color:#c594c5;">pub fn </span><span style="color:#6699cc;">parse_and_check</span><span style="color:#5fb3b3;">(</span><span style="color:#f99157;">input</span><span style="color:#5fb3b3;">: &amp;</span><span style="color:#c594c5;">str</span><span style="color:#5fb3b3;">) -&gt; </span><span style="color:#fac863;">Result</span><span style="color:#5fb3b3;">&lt;</span><span style="color:#c594c5;">i32</span><span style="color:#5fb3b3;">&gt; {
+</span><span>    </span><span style="color:#c594c5;">let</span><span> number </span><span style="color:#5fb3b3;">=</span><span> input
+</span><span>        </span><span style="color:#5fb3b3;">.</span><span>parse</span><span style="color:#5fb3b3;">::&lt;</span><span style="color:#c594c5;">i32</span><span style="color:#5fb3b3;">&gt;()
+</span><span>        </span><span style="color:#5fb3b3;">.</span><span style="color:#6699cc;">with_context</span><span style="color:#5fb3b3;">(|| </span><span>format!</span><span style="color:#5fb3b3;">(&quot;</span><span style="color:#99c794;">failed to parse value, {input}</span><span style="color:#5fb3b3;">&quot;))?;
+</span><span>
+</span><span>    </span><span style="color:#6699cc;">divisible_by_two</span><span style="color:#5fb3b3;">(</span><span>number</span><span style="color:#5fb3b3;">)
+</span><span style="color:#5fb3b3;">}
+</span></code></pre>
+<p>Both approaches simplify error handling, and both fit the philosophy of <em>Laissez-Faire</em> errors: add structure only when the code actually needs it. Personally I am a fan of implementing my errors manually, as I find writing errors in Rust to be easy and intuitive, and using a third-party crate overkill, unless there's a specific need to simplify error handling further.</p>
+<h2 id="laissez-faire-errors-end">Laissez-Faire Errors --end</h2>
+<p>Hopefully this post has shown that writing errors in Rust is best done as the need arises, and that error handling should never impede a project. Moreover, idiomatic error handling makes the matter of managing when to use an <code>Err</code> variant clearer and less prone to confusion. The goal of a good error is to tell you what went wrong. In a user-facing application, that could be a pop-up message: "Failed to upload file", and with a server application it would likely be appending the error to a log file, with a timestamp - NOT <code>unwrap()</code>, if you expect the application to recover from errors.</p>
+
+  </div><div class="giscus comments"></div>
+<script src="https://giscus.app/client.js"
+        data-repo="rpg-alex&#x2F;hemomorphic"
+        data-repo-id="R_kgDOQVq14Q"
+        data-category="Blog comments"
+        data-category-id="DIC_kwDOQVq14c4CzJUG"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="transparent_dark"
+        data-lang="en"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</article>
+
+    </main>
+  </div>
+  <footer><a href="mailto:mralexblood@outlook.com"><i class="svg-icon icon-mail"></i></a><a href="https://github.com/rpg-alex"><i class="svg-icon icon-github-circled"></i></a><a href="https://buymeacoffee.com/rpg.alex"><img
+    class="svg-icon"
+    src="https://hemomorphic.alexblood.net/images/bmc-brand-icon.svg"
+    alt="☕"
+    
+  ></a>
+<span class="copyright">&copy; 2025 - 2026 Alex Blood</span>
+</footer>
+  <script src="https://hemomorphic.alexblood.net/js/copy-code.js" defer></script>
+</body>
+
+</html>
